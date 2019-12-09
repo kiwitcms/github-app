@@ -1,0 +1,9 @@
+-r requirements.txt
+
+factory_boy
+flake8
+coveralls
+PyGithub
+pylint
+pylint-django
+kiwitcms

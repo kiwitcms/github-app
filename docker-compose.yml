@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+    db:
+        container_name: postgresql_database
+        image: centos/postgresql-10-centos7
+        restart: always
+        ports:
+            - 5432:5432
+#        volumes:
+#            - ./db-init.sh:/opt/app-root/src/postgresql-init/db-init.sh:Z
+        environment:
+            POSTGRESQL_DATABASE: test_project
+            POSTGRESQL_USER: kiwi
+            POSTGRESQL_PASSWORD: kiwi
