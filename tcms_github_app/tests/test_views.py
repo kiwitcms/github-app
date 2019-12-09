@@ -137,15 +137,15 @@ class HandleRepositoryCreatedTestCase(test.TestCase):
     "private": false,
     "owner": {
       "login": "kiwitcms-bot",
-      "id": 44892260,
+      "id": 44892260
     },
     "html_url": "https://github.com/kiwitcms-bot/test",
     "description": 'A test repository',
-    "fork": false,
+    "fork": false
   },
   "sender": {
     "login": "kiwitcms-bot",
-    "id": 44892260,
+    "id": 44892260
   },
   "installation": {
     "id": 5498908,
