@@ -9,6 +9,7 @@ from http import HTTPStatus
 from django import test
 from django.urls import reverse
 from django.conf import settings
+from django.http import HttpResponseForbidden
 
 from tcms.utils import github
 
