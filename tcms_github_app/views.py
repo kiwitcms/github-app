@@ -26,8 +26,13 @@ class WebHook(View):
         """
         result = github.verify_signature(
             request, settings.KIWI_GITHUB_APP_SECRET)
+
         if result is not True:
             return result  # must be an HttpResponse then
+
+        event = request.headers.get('X-GitHub-Event', None)
+        if not event:
+            HttpResponseForbidden('Missing event')
 
         payload = json.loads(request.body.decode('utf-8'))
 
@@ -40,6 +45,7 @@ class WebHook(View):
             sender = payload['sender']['email']
 
         WebhookPayload.objects.create(
+            event=event,
             action=payload['action'],
             sender=sender,
             payload=payload,

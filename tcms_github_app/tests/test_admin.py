@@ -27,6 +27,7 @@ class PurchaseAdminTestCase(LoggedInTestCase):
         # create an object so we can use its values to validate
         # the changelist view
         payload = WebhookPayload.objects.create(
+            event='admin-test',
             action='test-admin-changelist-view',
             sender=self.tester.username,
             payload={},
@@ -40,10 +41,11 @@ class PurchaseAdminTestCase(LoggedInTestCase):
 
         # assert all columns that must be visible
         self.assertContains(response, payload.pk)
-        self.assertContains(response, payload.action)
-        self.assertContains(response, payload.sender)
         # timestamps are formatted according to localization
         self.assertContains(response, 'Received on')
+        self.assertContains(response, 'Event')
+        self.assertContains(response, payload.action)
+        self.assertContains(response, payload.sender)
 
     def test_add_not_possible(self):
         response = self.client.get(
@@ -59,6 +61,7 @@ class PurchaseAdminTestCase(LoggedInTestCase):
         # delete view, otherwise Django will tell us that we are trying
         # to delete a non-existing object
         payload = WebhookPayload.objects.create(
+            event='admin-test',
             action='test-admin-delete-view',
             sender=self.tester.username,
             payload={},

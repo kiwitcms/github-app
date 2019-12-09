@@ -11,6 +11,7 @@ class WebhookPayload(models.Model):
     """
         Holds information about received webhooks
     """
+    event = models.CharField(max_length=64, db_index=True)
     action = models.CharField(max_length=64, db_index=True)
     # either username or email
     sender = models.CharField(max_length=64, db_index=True)

@@ -20,6 +20,7 @@ class Migration(migrations.Migration):
                                         primary_key=True,
                                         serialize=False,
                                         verbose_name='ID')),
+                ('event', models.CharField(db_index=True, max_length=64)),
                 ('action', models.CharField(db_index=True, max_length=64)),
                 ('sender', models.CharField(db_index=True, max_length=64)),
                 ('received_on', models.DateTimeField(auto_now_add=True,

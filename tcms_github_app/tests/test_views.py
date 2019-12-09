@@ -81,8 +81,36 @@ class WebHookTestCase(test.TestCase):
         response = self.client.post(self.url,
                                     json.loads(payload),
                                     content_type='application/json',
-                                    HTTP_X_HUB_SIGNATURE=signature)
+                                    HTTP_X_HUB_SIGNATURE=signature,
+                                    HTTP_X_GITHUB_EVENT='some-event')
         self.assertContains(response, 'ok')
 
         # the hook handler saves to DB
         self.assertEqual(initial_db_count + 1, WebhookPayload.objects.count())
+
+
+    def test_with_valid_signature_header_without_event_header(self):
+        payload = """
+{
+  "zen": "Totally made up message",
+  "sender": {
+    "login": "kiwitcms-bot",
+    "id": 1002300
+  }
+}
+""".strip()
+
+        signature = github.calculate_signature(
+            settings.KIWI_GITHUB_APP_SECRET,
+            json.dumps(json.loads(payload)).encode())
+
+        initial_db_count = WebhookPayload.objects.count()
+
+        # X-GitHub-Event header is missing !!!
+        response = self.client.post(self.url,
+                                    json.loads(payload),
+                                    content_type='application/json',
+                                    HTTP_X_HUB_SIGNATURE=signature)
+
+        self.assertIsInstance(response, HttpResponseForbidden)
+        self.assertEqual(HTTPStatus.FORBIDDEN, response.status_code)

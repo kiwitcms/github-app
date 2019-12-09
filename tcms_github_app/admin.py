@@ -10,7 +10,7 @@ from tcms_github_app.models import WebhookPayload
 
 
 class WebhookPayloadAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'action', 'sender', 'received_on')
+    list_display = ('pk', 'received_on', 'sender', 'event', 'action')
     ordering = ['-pk']
 
     def add_view(self, request, form_url='', extra_context=None):
