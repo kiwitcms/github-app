@@ -4,6 +4,7 @@
 # pylint: disable=too-many-ancestors
 
 import json
+from http import HTTPStatus
 
 from django import test
 from django.urls import reverse
@@ -39,3 +40,21 @@ class WebHookTestCase(test.TestCase):
 
         # initial ping responds with a pong
         self.assertContains(response, 'pong')
+
+    def test_without_signature_header(self):
+        payload = json.loads("""
+{
+  "zen": "Mind your words, they are important.",
+  "sender": {
+    "login": "atodorov",
+    "id": 1002300
+  }
+}
+""".strip())
+
+        response = self.client.post(
+            self.url, payload, content_type='application/json')
+
+        # missing signature should cause failure
+        self.assertIsInstance(response, HttpResponseForbidden)
+        self.assertEqual(HTTPStatus.FORBIDDEN, response.status_code)
