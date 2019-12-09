@@ -1,6 +1,6 @@
 .PHONY: test
 test:
-	PYTHONWARNINGS=d AUTO_CREATE_SCHEMA='' coverage run \
+	PYTHONWARNINGS=d coverage run \
 	    --include "tcms_github_app/*.py" \
 	    --omit "tcms_github_app/tests/*.py" \
 	    ./manage.py test -v2 tcms_github_app.tests
