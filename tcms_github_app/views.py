@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.views.generic.base import View
 
 from tcms.utils import github
+fromt tcms_github_app.models import WebhookPayload
 
 
 # pylint: disable=unused-argument
@@ -34,4 +35,13 @@ class WebHook(View):
         if 'zen' in payload:
             return HttpResponse('pong', content_type='text/plain')
 
+        sender = payload['sender']['login']
+        if 'email' in payload['sender']:
+            sender = payload['sender']['email']
+
+        WebhookPayload.objects.create(
+            action=payload['action'],
+            sender=sender,
+            payload=payload,
+        )
         return HttpResponse('ok', content_type='text/plain')

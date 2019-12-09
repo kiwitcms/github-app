@@ -12,6 +12,7 @@ from django.conf import settings
 from django.http import HttpResponseForbidden
 
 from tcms.utils import github
+from tcms_github_app.models import WebhookPayload
 
 
 class WebHookTestCase(test.TestCase):
@@ -59,3 +60,29 @@ class WebHookTestCase(test.TestCase):
         # missing signature should cause failure
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(HTTPStatus.FORBIDDEN, response.status_code)
+
+    def test_with_valid_signature_header(self):
+        payload = """
+{
+  "will-be-saved-in-db": "Totally made up message",
+  "sender": {
+    "login": "kiwitcms-bot",
+    "id": 1002300
+  }
+}
+""".strip()
+
+        signature = github.calculate_signature(
+            settings.KIWI_GITHUB_APP_SECRET,
+            json.dumps(json.loads(payload)).encode())
+
+        initial_db_count = WebhookPayload.objects.count()
+
+        response = self.client.post(self.url,
+                                    json.loads(payload),
+                                    content_type='application/json',
+                                    HTTP_X_HUB_SIGNATURE=signature)
+        self.assertContains(response, 'ok')
+
+        # the hook handler saves to DB
+        self.assertEqual(initial_db_count + 1, WebhookPayload.objects.count())
