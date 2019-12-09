@@ -10,6 +10,7 @@ from django.views.generic.base import View
 
 from tcms.utils import github
 from tcms_github_app.models import WebhookPayload
+from tcms_github_app import utils
 
 
 # pylint: disable=unused-argument
@@ -19,6 +20,11 @@ class WebHook(View):
         https://developer.github.com/marketplace/listing-on-github-marketplace/configuring-the-github-marketplace-webhook/
     """
     http_method_names = ['post', 'head', 'options']
+
+    @staticmethod
+    def handle_payload(payload):
+        if payload.event == "repository" and payload.action == "created":
+            utils.create_product_from_repository(payload)
 
     def post(self, request, *args, **kwargs):
         """
@@ -40,14 +46,19 @@ class WebHook(View):
         if 'zen' in payload:
             return HttpResponse('pong', content_type='text/plain')
 
+        # prefer email for sender b/c emails between Kiwi TCMS and GitHub
+        # will match. Usernames may not be the same !!!
         sender = payload['sender']['login']
         if 'email' in payload['sender']:
             sender = payload['sender']['email']
 
-        WebhookPayload.objects.create(
+        wh_payload = WebhookPayload.objects.create(
             event=event,
             action=payload['action'],
             sender=sender,
             payload=payload,
         )
+
+        self.handle_payload(wh_payload)
+
         return HttpResponse('ok', content_type='text/plain')

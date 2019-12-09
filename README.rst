@@ -22,6 +22,13 @@ Introduction
 This package provides the GitHub App integration for Kiwi TCMS.
 You don't need this add-on in order to run Kiwi TCMS in stand-alone mode!
 
+Communication from GitHub to this add-on is via webhooks.
+
+Add-on behavior:
+
+- Newly created repositories are added as products in Kiwi TCMS
+
+
 Changelog
 ---------
 

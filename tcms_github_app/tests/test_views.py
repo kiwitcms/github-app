@@ -12,7 +12,10 @@ from django.conf import settings
 from django.http import HttpResponseForbidden
 
 from tcms.utils import github
+from tcms.management.models import Product
+
 from tcms_github_app.models import WebhookPayload
+from tcms_github_app.tests import UserFactory
 
 
 class WebHookTestCase(test.TestCase):
@@ -113,3 +116,54 @@ class WebHookTestCase(test.TestCase):
         self.assertContains(response,
                             'Missing event',
                             status_code=HTTPStatus.FORBIDDEN)
+
+
+class HandleRepositoryCreatedTestCase(test.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.url = reverse('github_app_webhook')
+        cls.user = UserFactory(username='kiwitcms-bot')
+
+    def test_creates_new_product(self):
+        self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+
+        payload = """
+{
+  "action": "created",
+  "repository": {
+    "id": 225221463,
+    "full_name": "kiwitcms-bot/test",
+    "private": false,
+    "owner": {
+      "login": "kiwitcms-bot",
+      "id": 44892260,
+    },
+    "html_url": "https://github.com/kiwitcms-bot/test",
+    "description": 'A test repository',
+    "fork": false,
+  },
+  "sender": {
+    "login": "kiwitcms-bot",
+    "id": 44892260,
+  },
+  "installation": {
+    "id": 5498908,
+    "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uNTQ5ODkwOA=="
+  }
+}""".strip()
+
+        signature = github.calculate_signature(
+            settings.KIWI_GITHUB_APP_SECRET,
+            json.dumps(json.loads(payload)).encode())
+
+        response = self.client.post(self.url,
+                                    json.loads(payload),
+                                    content_type='application/json',
+                                    HTTP_X_HUB_SIGNATURE=signature,
+                                    HTTP_X_GITHUB_EVENT='repository')
+
+        self.assertContains(response, 'ok')
+
+        new_product = Product.objects.get(name='kiwitcms-bot/test')
+        self.assertEqual(new_product.description, 'A test repository')
