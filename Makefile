@@ -16,12 +16,5 @@ pylint:
 	pylint --load-plugins=pylint_django -d missing-docstring -d duplicate-code *.py \
 	    -d wildcard-import -d unused-wildcard-import tcms_github_app/ test_project/
 
-
-.PHONY: messages
-messages:
-	./manage.py makemessages --no-obsolete --no-vinaigrette --ignore "test*.py"
-	ls tcms_github_app/locale/*/LC_MESSAGES/*.po | xargs -n 1 -I @ msgattrib -o @ --no-fuzzy @
-
-
 .PHONY: check
 check: flake8 pylint test

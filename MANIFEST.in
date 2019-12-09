@@ -1,6 +1,4 @@
 include README.rst LICENSE requirements.txt
 
-graft tcms_github_app/templates
-
 recursive-exclude test_project/ *
 recursive-exclude tcms_github_app/tests/ *

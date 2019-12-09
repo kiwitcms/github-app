@@ -6,16 +6,12 @@ import json
 from datetime import datetime
 
 from django.conf import settings
-from django.urls import reverse
-from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic.base import View, TemplateView
-from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.views.generic.base import View
 
 from tcms.utils import github
 
-from tcms_github_app.models import Installation
+#from tcms_github_app.models import HookPayload
 
 
 # pylint: disable=unused-argument
@@ -29,12 +25,9 @@ class WebHook(View):
     def post(self, request, *args, **kwargs):
         """
             Hook must be configured to receive JSON payload!
-
-            Save the 'purchased' event in the database, see:
-            https://developer.github.com/marketplace/integrating-with-the-github-marketplace-api/github-marketplace-webhook-events/
         """
         result = github.verify_signature(
-            request, settings.KIWI_GITHUB_MARKETPLACE_SECRET)
+            request, settings.KIWI_GITHUB_APP_SECRET)
         if result is not True:
             return result  # must be an HttpResponse then
 
@@ -48,32 +41,12 @@ class WebHook(View):
         effective_date = datetime.strptime(payload['effective_date'][:19],
                                            '%Y-%m-%dT%H:%M:%S')
         # save payload for future use
-        purchase = Purchase.objects.create(
-            vendor='github',
-            action=payload['action'],
-            sender=payload['sender']['email'],
-            effective_date=effective_date,
-            payload=payload,
-        )
-        organization = utils.organization_from_purchase(purchase)
-
-        # plan cancellations must be handled here
-        if purchase.action == 'cancelled':
-            return utils.cancel_plan(purchase)
-
-        if purchase.action == 'purchased':
-            # recurring billing events don't redirect to Install URL
-            # they only send a web hook
-            tenant = Tenant.objects.filter(
-                owner__email=purchase.sender,
-                organization=organization,
-                paid_until__isnull=False,
-            ).first()
-            if tenant:
-                tenant.paid_until = utils.calculate_paid_until(
-                    purchase.payload['marketplace_purchase'],
-                    purchase.effective_date,
-                )
-                tenant.save()
+#        purchase = Purchase.objects.create(
+#            vendor='github',
+#            action=payload['action'],
+#            sender=payload['sender']['email'],
+#            effective_date=effective_date,
+#            payload=payload,
+#        )
 
         return HttpResponse('ok', content_type='text/plain')
