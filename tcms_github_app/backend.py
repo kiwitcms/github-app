@@ -2,9 +2,9 @@ from social_core.backends.github import GithubOAuth2
 from social_core.utils import handle_http_errors
 
 
-# todo: remove once shipped in social-auth-core, see
+# Remove once shipped in social-auth-core, see
 # https://github.com/python-social-auth/social-core/pull/413/
-class GithubAppAuth(GithubOAuth2):
+class GithubAppAuth(GithubOAuth2):  # pylint: disable=abstract-method
     """GitHub App OAuth authentication backend"""
     name = 'github-app'
 
@@ -29,12 +29,12 @@ class GithubAppAuth(GithubOAuth2):
 
         return super().validate_state()
 
-    # todo: when Installing after OAuth and while being logged into Kiwi TCMS
+    # when Installing after OAuth and while being logged into Kiwi TCMS
     # the session cookie persists and collides with a new cookies/new access_token
     # so automatic login isn't performed. When clicking the login button everything
     # works though. I still don't know what happens exactly
-    # @handle_http_errors
-    # def do_auth(self, access_token, *args, **kwargs):
-    #    kwargs['user'] = None
-    #    self.strategy.session.delete()
-    #    return super().do_auth(access_token, *args, **kwargs)
+    @handle_http_errors
+    def do_auth(self, access_token, *args, **kwargs):
+        # kwargs['user'] = None
+        # self.strategy.session.delete()
+        return super().do_auth(access_token, *args, **kwargs)
