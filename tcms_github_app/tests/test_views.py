@@ -64,7 +64,7 @@ class WebHookTestCase(test.TestCase):
     def test_with_valid_signature_header(self):
         payload = """
 {
-  "will-be-saved-in-db": "Totally made up message",
+  "action": "will-be-saved-in-db",
   "sender": {
     "login": "kiwitcms-bot",
     "id": 1002300
@@ -91,7 +91,7 @@ class WebHookTestCase(test.TestCase):
     def test_with_valid_signature_header_without_event_header(self):
         payload = """
 {
-  "zen": "Totally made up message",
+  "action", "will-be-saved-in-db",
   "sender": {
     "login": "kiwitcms-bot",
     "id": 1002300
