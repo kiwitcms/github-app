@@ -12,8 +12,12 @@ SECRET_KEY = '7d09f358-6609-11e9-8140-34363b8604e2'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/tmp/test_project.sqlite',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'test_project',
+        'USER': 'kiwi',
+        'PASSWORD': 'kiwi',
+        'HOST': 'localhost',
+        'OPTIONS': {},
     }
 }
 

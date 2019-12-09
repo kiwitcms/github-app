@@ -4,9 +4,16 @@ cache: pip
 python:
   - "3.6"
 
+services:
+  - postgresql
+
 install:
   - pip install -U pip
   - pip install -r devel.txt
+
+before_script:
+  - psql -c "CREATE EXTENSION IF NOT EXISTS btree_gin;" -U postgres
+  - psql -c "CREATE USER kiwi WITH PASSWORD 'kiwi' CREATEDB;" -U postgres
 
 script:
   - make check
