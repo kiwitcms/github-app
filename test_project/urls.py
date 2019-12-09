@@ -5,8 +5,8 @@
 from django.conf.urls import include, url
 
 from tcms.urls import urlpatterns
-from tcms_github_app import urls as githubapp_urls
 from tcms_tenants import urls as tenants_urls
+from tcms_github_app import urls as githubapp_urls
 
 
 urlpatterns += [

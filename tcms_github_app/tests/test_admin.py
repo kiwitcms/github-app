@@ -7,8 +7,9 @@ from django.urls import reverse
 from django.conf import settings
 from django.http import HttpResponseForbidden
 
+from tcms_tenants.tests import LoggedInTestCase
+
 from tcms_github_app.models import WebhookPayload
-from tcms_github_app.tests import LoggedInTestCase
 
 
 class PurchaseAdminTestCase(LoggedInTestCase):
@@ -29,7 +30,7 @@ class PurchaseAdminTestCase(LoggedInTestCase):
         payload = WebhookPayload.objects.create(
             event='admin-test',
             action='test-admin-changelist-view',
-            sender=self.tester.username,
+            sender=123456789,
             payload={},
         )
 
@@ -45,7 +46,7 @@ class PurchaseAdminTestCase(LoggedInTestCase):
         self.assertContains(response, 'Received on')
         self.assertContains(response, 'Event')
         self.assertContains(response, payload.action)
-        self.assertContains(response, payload.sender)
+        self.assertContains(response, '123456789')
 
     def test_add_not_possible(self):
         response = self.client.get(
@@ -63,7 +64,7 @@ class PurchaseAdminTestCase(LoggedInTestCase):
         payload = WebhookPayload.objects.create(
             event='admin-test',
             action='test-admin-delete-view',
-            sender=self.tester.username,
+            sender=123456789,
             payload={},
         )
 

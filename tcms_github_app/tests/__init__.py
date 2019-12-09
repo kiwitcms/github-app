@@ -2,35 +2,34 @@
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 
-from django import test
-from django.conf import settings
+# pylint: disable=too-many-ancestors
 
 import factory
 from factory.django import DjangoModelFactory
 
+from tcms_tenants.tests import LoggedInTestCase
+from tcms_tenants.tests import UserFactory
 
-class UserFactory(DjangoModelFactory):
+
+class AppInstallationFactory(DjangoModelFactory):
     class Meta:
-        model = settings.AUTH_USER_MODEL
+        model = 'tcms_github_app.AppInstallation'
 
-    username = factory.Sequence(lambda n: 'User%d' % n)
-    email = factory.LazyAttribute(
-        lambda user: '%s@kiwitcms.org' % user.username)
-    is_staff = True
-    is_superuser = False
+    installation = factory.Sequence(lambda n: n)
+    sender = None
+    tenant_pk = None
 
 
-class LoggedInTestCase(test.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+class UserSocialAuthFactory(DjangoModelFactory):
+    class Meta:
+        model = 'social_django.UserSocialAuth'
 
-        cls.tester = UserFactory()
-        cls.tester.set_password('password')
-        cls.tester.save()
+    user = factory.SubFactory(UserFactory)
+    provider = 'github'
+    uid = factory.Sequence(lambda n: n)
 
+
+class AnonymousTestCase(LoggedInTestCase):
     def setUp(self):
         super().setUp()
-
-        self.client.login(username=self.tester.username,
-                          password='password')
+        self.client.logout()

@@ -13,8 +13,8 @@ class WebhookPayload(models.Model):
     """
     event = models.CharField(max_length=64, db_index=True)
     action = models.CharField(max_length=64, db_index=True)
-    # either username or email
-    sender = models.CharField(max_length=64, db_index=True)
+    # GitHub UID, match with UserSocialAuth.uid
+    sender = models.PositiveIntegerField(db_index=True)
 
     # this is for internal purposes
     received_on = models.DateTimeField(db_index=True, auto_now_add=True)
@@ -30,3 +30,18 @@ class WebhookPayload(models.Model):
     def __str__(self):
         return "WebhookPayload '%s' from '%s' on '%s'" % (
             self.action, self.sender, self.received_on.isoformat())
+
+
+class AppInstallation(models.Model):
+    """
+        Holds information for which tenant is this GitHub installation
+        authorized. Everything is integers instead of FK to allow
+        installation before/after a user is logged into Kiwi TCMS and
+        allow for GitHub admins/users leaving organizations, leaving Kiwi TCMS, etc.
+
+        The overriden admin interface is where the magic happens!
+    """
+    installation = models.PositiveIntegerField(db_index=True)
+    sender = models.PositiveIntegerField(db_index=True)
+    # None - means unconfigured tenant, otherwise has value
+    tenant_pk = models.PositiveIntegerField(null=True, blank=True, db_index=True)

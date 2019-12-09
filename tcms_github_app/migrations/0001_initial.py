@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                                         verbose_name='ID')),
                 ('event', models.CharField(db_index=True, max_length=64)),
                 ('action', models.CharField(db_index=True, max_length=64)),
-                ('sender', models.CharField(db_index=True, max_length=64)),
+                ('sender', models.PositiveIntegerField(db_index=True)),
                 ('received_on', models.DateTimeField(auto_now_add=True,
                                                      db_index=True)),
                 ('payload', django.contrib.postgres.fields.jsonb.JSONField()),
@@ -34,5 +34,19 @@ class Migration(migrations.Migration):
                 fastupdate=False,
                 fields=['payload'],
                 name='tcms_github_app_payload_gin'),
+        ),
+        migrations.CreateModel(
+            name='AppInstallation',
+            fields=[
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True,
+                                        serialize=False,
+                                        verbose_name='ID')),
+                ('installation', models.PositiveIntegerField(db_index=True)),
+                ('sender', models.PositiveIntegerField(db_index=True)),
+                ('tenant_pk', models.PositiveIntegerField(db_index=True,
+                                                          null=True,
+                                                          blank=True)),
+            ],
         ),
     ]

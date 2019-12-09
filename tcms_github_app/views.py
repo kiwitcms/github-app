@@ -25,6 +25,8 @@ class WebHook(View):
     def handle_payload(payload):
         if payload.event == "repository" and payload.action == "created":
             utils.create_product_from_repository(payload)
+        elif payload.event == "installation" and payload.action == "created":
+            utils.create_installation(payload)
 
     def post(self, request, *args, **kwargs):
         """
@@ -46,11 +48,8 @@ class WebHook(View):
         if 'zen' in payload:
             return HttpResponse('pong', content_type='text/plain')
 
-        # prefer email for sender b/c emails between Kiwi TCMS and GitHub
-        # will match. Usernames may not be the same !!!
-        sender = payload['sender']['login']
-        if 'email' in payload['sender']:
-            sender = payload['sender']['email']
+        # GitHub ID will be matched again UserSocialAuth.uid
+        sender = payload['sender']['id']
 
         wh_payload = WebhookPayload.objects.create(
             event=event,

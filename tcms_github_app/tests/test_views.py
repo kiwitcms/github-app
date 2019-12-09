@@ -6,19 +6,24 @@
 import json
 from http import HTTPStatus
 
-from django import test
 from django.urls import reverse
 from django.conf import settings
 from django.http import HttpResponseForbidden
 
+from django_tenants.utils import tenant_context
+
 from tcms.utils import github
 from tcms.management.models import Product
 
+from tcms_tenants.tests import UserFactory
+
 from tcms_github_app.models import WebhookPayload
-from tcms_github_app.tests import UserFactory
+from tcms_github_app.tests import AnonymousTestCase
+from tcms_github_app.tests import AppInstallationFactory
+from tcms_github_app.tests import UserSocialAuthFactory
 
 
-class WebHookTestCase(test.TestCase):
+class WebHookTestCase(AnonymousTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -118,15 +123,24 @@ class WebHookTestCase(test.TestCase):
                             status_code=HTTPStatus.FORBIDDEN)
 
 
-class HandleRepositoryCreatedTestCase(test.TestCase):
+class HandleRepositoryCreatedTestCase(AnonymousTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.url = reverse('github_app_webhook')
-        cls.user = UserFactory(username='kiwitcms-bot')
+        cls.social_user = UserSocialAuthFactory(
+            user=UserFactory(username='kiwitcms-bot')
+        )
 
     def test_creates_new_product(self):
         self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+
+        # simulate already configured installation owned by the same user
+        # who owns the GitHub repository
+        app_inst = AppInstallationFactory(
+            sender=self.social_user.uid,
+            tenant_pk=self.tenant.pk,
+        )
 
         payload = """
 {
@@ -136,22 +150,22 @@ class HandleRepositoryCreatedTestCase(test.TestCase):
     "full_name": "kiwitcms-bot/test",
     "private": false,
     "owner": {
-      "login": "kiwitcms-bot",
-      "id": 44892260
     },
     "html_url": "https://github.com/kiwitcms-bot/test",
     "description": "A test repository",
     "fork": false
   },
   "sender": {
-    "login": "kiwitcms-bot",
-    "id": 44892260
+    "login": "%s",
+    "id": %d
   },
   "installation": {
-    "id": 5498908,
+    "id": %d,
     "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uNTQ5ODkwOA=="
   }
-}""".strip()
+}""".strip() % (self.social_user.user.username,
+                self.social_user.uid,
+                app_inst.installation)
 
         signature = github.calculate_signature(
             settings.KIWI_GITHUB_APP_SECRET,
@@ -165,5 +179,6 @@ class HandleRepositoryCreatedTestCase(test.TestCase):
 
         self.assertContains(response, 'ok')
 
-        new_product = Product.objects.get(name='kiwitcms-bot/test')
-        self.assertEqual(new_product.description, 'A test repository')
+        with tenant_context(self.tenant):
+            new_product = Product.objects.get(name='kiwitcms-bot/test')
+            self.assertEqual(new_product.description, 'A test repository')
