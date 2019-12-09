@@ -32,7 +32,7 @@ class WebHook(View):
 
         event = request.headers.get('X-GitHub-Event', None)
         if not event:
-            HttpResponseForbidden('Missing event')
+            return HttpResponseForbidden('Missing event')
 
         payload = json.loads(request.body.decode('utf-8'))
 
