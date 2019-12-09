@@ -5,11 +5,11 @@
 import json
 
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.views.generic.base import View
 
 from tcms.utils import github
-fromt tcms_github_app.models import WebhookPayload
+from tcms_github_app.models import WebhookPayload
 
 
 # pylint: disable=unused-argument

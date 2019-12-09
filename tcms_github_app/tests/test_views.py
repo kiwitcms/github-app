@@ -88,7 +88,6 @@ class WebHookTestCase(test.TestCase):
         # the hook handler saves to DB
         self.assertEqual(initial_db_count + 1, WebhookPayload.objects.count())
 
-
     def test_with_valid_signature_header_without_event_header(self):
         payload = """
 {
@@ -104,8 +103,6 @@ class WebHookTestCase(test.TestCase):
             settings.KIWI_GITHUB_APP_SECRET,
             json.dumps(json.loads(payload)).encode())
 
-        initial_db_count = WebhookPayload.objects.count()
-
         # X-GitHub-Event header is missing !!!
         response = self.client.post(self.url,
                                     json.loads(payload),
@@ -113,4 +110,6 @@ class WebHookTestCase(test.TestCase):
                                     HTTP_X_HUB_SIGNATURE=signature)
 
         self.assertIsInstance(response, HttpResponseForbidden)
-        self.assertEqual(HTTPStatus.FORBIDDEN, response.status_code)
+        self.assertContains(response,
+                            'Missing event',
+                            status_code=HTTPStatus.FORBIDDEN)
