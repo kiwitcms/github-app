@@ -6,17 +6,16 @@ from django.urls import reverse
 from django.contrib import admin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 
-from tcms_github_app.models import Purchase
+from tcms_github_app.models import WebhookPayload
 
 
-class PurchaseAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'vendor', 'action', 'sender',
-                    'effective_date', 'received_on')
+class WebhookPayloadAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'action', 'sender', 'received_on')
     ordering = ['-pk']
 
     def add_view(self, request, form_url='', extra_context=None):
         return HttpResponseRedirect(
-            reverse('admin:tcms_github_app_purchase_changelist'))
+            reverse('admin:tcms_github_app_webhookpayload_changelist'))
 
     @admin.options.csrf_protect_m
     def changelist_view(self, request, extra_context=None):
@@ -28,7 +27,7 @@ class PurchaseAdmin(admin.ModelAdmin):
     @admin.options.csrf_protect_m
     def delete_view(self, request, object_id, extra_context=None):
         return HttpResponseRedirect(
-            reverse('admin:tcms_github_app_purchase_changelist'))
+            reverse('admin:tcms_github_app_webhookpayload_changelist'))
 
 
-admin.site.register(Purchase, PurchaseAdmin)
+admin.site.register(WebhookPayload, WebhookPayloadAdmin)

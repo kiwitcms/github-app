@@ -6,4 +6,5 @@ coveralls
 PyGithub
 pylint
 pylint-django
+psycopg2
 kiwitcms
