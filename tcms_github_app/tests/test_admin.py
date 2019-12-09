@@ -50,7 +50,7 @@ class PurchaseAdminTestCase(LoggedInTestCase):
             reverse('admin:tcms_github_app_webhookpayload_add'))
         self.assertRedirects(
             response,
-            reverse('admin:tcms_github_app_webhook_changelist'),
+            reverse('admin:tcms_github_app_webhookpayload_changelist'),
             fetch_redirect_response=False,
         )
 
