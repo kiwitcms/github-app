@@ -140,7 +140,7 @@ class HandleRepositoryCreatedTestCase(test.TestCase):
       "id": 44892260
     },
     "html_url": "https://github.com/kiwitcms-bot/test",
-    "description": 'A test repository',
+    "description": "A test repository",
     "fork": false
   },
   "sender": {
