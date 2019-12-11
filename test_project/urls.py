@@ -5,9 +5,11 @@
 from django.conf.urls import include, url
 
 from tcms.urls import urlpatterns
-from tcms_github_app import urls
+from tcms_github_app import urls as githubapp_urls
+from tcms_tenants import urls as tenants_urls
 
 
 urlpatterns += [
-    url(r'^github/app/', include(urls)),
+    url(r'^github/app/', include(githubapp_urls)),
+    url(r'^tenants/', include(tenants_urls, namespace='tenants')),
 ]

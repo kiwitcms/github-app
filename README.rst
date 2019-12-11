@@ -19,8 +19,10 @@ GitHub App integration for Kiwi TCMS
 Introduction
 ------------
 
-This package provides the GitHub App integration for Kiwi TCMS.
-You don't need this add-on in order to run Kiwi TCMS in stand-alone mode!
+This package provides the GitHub App integration for Kiwi TCMS and is
+designed to work only for multi-tenant environments.
+You don't need this add-on in order to run Kiwi TCMS without extended
+GitHub integration!
 
 Communication from GitHub to this add-on is via webhooks.
 

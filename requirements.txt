@@ -1,1 +1,2 @@
-social-auth-app-django==3.1.0
+social-auth-app-django
+kiwitcms-tenants
