@@ -10,6 +10,9 @@ from django.urls import reverse
 from django.conf import settings
 from django.http import HttpResponseForbidden
 
+from django_tenants.utils import get_tenant_model
+from django_tenants.utils import get_tenant_domain_model
+from django_tenants.utils import schema_context
 from django_tenants.utils import tenant_context
 
 from tcms.utils import github
@@ -17,6 +20,7 @@ from tcms.management.models import Product
 
 from tcms_tenants.tests import UserFactory
 
+from tcms_github_app.models import AppInstallation
 from tcms_github_app.models import WebhookPayload
 from tcms_github_app.tests import AnonymousTestCase
 from tcms_github_app.tests import AppInstallationFactory
@@ -291,3 +295,347 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
         self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
         with tenant_context(self.tenant):
             self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+
+
+class HandleInstallationCreatedTestCase(AnonymousTestCase):
+    @classmethod
+    def setUpClass(cls):
+        # we really need private schema to be created on disk
+        # otherwise tenant_context() operations still create
+        # objects into public schema!
+        get_tenant_model().auto_create_schema = True
+
+        cls.url = reverse('github_app_webhook')
+
+        # remove pre-existing tenants so they don't mess up the tests
+        get_tenant_model().objects.all().delete()
+
+        with schema_context('public'):
+            cls.social_user = UserSocialAuthFactory(
+                user=UserFactory()
+            )
+
+            # public tenant object b/c schema exists but not the Tenant itself!
+            cls.public_tenant = get_tenant_model()(schema_name='public')
+            cls.setup_tenant(cls.public_tenant)
+            cls.public_tenant.save()
+
+            cls.public_domain = get_tenant_domain_model()(tenant=cls.public_tenant,
+                                                          domain='public.test.com')
+            cls.setup_domain(cls.public_domain)
+            cls.public_domain.save()
+
+            # private tenant for some tests
+            cls.private_tenant = get_tenant_model()(schema_name='private')
+            cls.setup_tenant(cls.private_tenant)
+            cls.private_tenant.save()
+
+            cls.private_domain = get_tenant_domain_model()(tenant=cls.private_tenant,
+                                                           domain='private.test.com')
+            cls.setup_domain(cls.private_domain)
+            cls.private_domain.save()
+
+        # create self.tenant after public & private
+        super().setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        # because some tests really need the schema present on disk
+        # while by default we don't create it to save execuion time
+        get_tenant_model().auto_create_schema = False
+
+    def tearDown(self):
+        with schema_context('public'):
+            # reset tenant access after each test
+            self.private_tenant.authorized_users.clear()
+            self.tenant.authorized_users.clear()
+
+        # delete products b/c we use the same payload for multiple tests
+        # and sometimes there can be duplicates from a previous test
+        for tenant in [self.public_tenant, self.private_tenant, self.tenant]:
+            with tenant_context(tenant):
+                Product.objects.all().delete()
+
+    def test_sender_not_in_db(self):
+        with schema_context('public'):
+            initial_installation_count = AppInstallation.objects.count()
+
+        payload = """
+{
+  "action": "created",
+  "installation": {
+    "id": 5651305,
+    "account": {
+      "login": "kiwitcms-bot",
+      "id": 44892260,
+      "site_admin": false
+    },
+    "repository_selection": "all",
+    "single_file_name": null
+  },
+  "repositories": [
+    {
+      "id": 224524413,
+      "node_id": "MDEwOlJlcG9zaXRvcnkyMjQ1MjQ0MTM=",
+      "name": "example",
+      "full_name": "kiwitcms-bot/example",
+      "private": false
+    },
+    {
+      "id": 225221463,
+      "node_id": "MDEwOlJlcG9zaXRvcnkyMjUyMjE0NjM=",
+      "name": "test",
+      "full_name": "kiwitcms-bot/test",
+      "private": false
+    }
+  ],
+  "requester": null,
+  "sender": {
+    "login": "kiwitcms-bot",
+    "id": 99999999,
+    "site_admin": false
+  }
+}""".strip()
+
+        signature = github.calculate_signature(
+            settings.KIWI_GITHUB_APP_SECRET,
+            json.dumps(json.loads(payload)).encode())
+
+        response = self.client.post(self.url,
+                                    json.loads(payload),
+                                    content_type='application/json',
+                                    HTTP_X_HUB_SIGNATURE=signature,
+                                    HTTP_X_GITHUB_EVENT='installation')
+
+        self.assertContains(response, 'ok')
+
+        with schema_context('public'):
+            self.assertEqual(
+                initial_installation_count + 1,
+                AppInstallation.objects.count())
+            self.assertTrue(
+                AppInstallation.objects.filter(installation=5651305,
+                                               sender=99999999,
+                                               tenant_pk=None).exists())
+
+    def test_sender_only_has_access_to_public(self):
+        # assert products don't exist initially
+        for tenant in [self.public_tenant, self.tenant, self.private_tenant]:
+            with tenant_context(tenant):
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+
+        payload = """
+{
+  "action": "created",
+  "installation": {
+    "id": 5651305,
+    "account": {
+      "login": "kiwitcms-bot",
+      "id": 44892260,
+      "site_admin": false
+    },
+    "repository_selection": "all",
+    "single_file_name": null
+  },
+  "repositories": [
+    {
+      "id": 224524413,
+      "node_id": "MDEwOlJlcG9zaXRvcnkyMjQ1MjQ0MTM=",
+      "name": "example",
+      "full_name": "kiwitcms-bot/example",
+      "private": false
+    },
+    {
+      "id": 225221463,
+      "node_id": "MDEwOlJlcG9zaXRvcnkyMjUyMjE0NjM=",
+      "name": "test",
+      "full_name": "kiwitcms-bot/test",
+      "private": false
+    }
+  ],
+  "requester": null,
+  "sender": {
+    "login": "%s",
+    "id": %d,
+    "site_admin": false
+  }
+}""".strip() % (self.social_user.user.username, self.social_user.uid)
+
+        signature = github.calculate_signature(
+            settings.KIWI_GITHUB_APP_SECRET,
+            json.dumps(json.loads(payload)).encode())
+
+        response = self.client.post(self.url,
+                                    json.loads(payload),
+                                    content_type='application/json',
+                                    HTTP_X_HUB_SIGNATURE=signature,
+                                    HTTP_X_GITHUB_EVENT='installation')
+
+        self.assertContains(response, 'ok')
+
+        with schema_context('public'):
+            self.assertTrue(
+                AppInstallation.objects.filter(installation=5651305,
+                                               sender=self.social_user.uid,
+                                               tenant_pk=self.public_tenant.pk).exists())
+
+        # assert products have been imported *ONLY* on public
+        with schema_context('public'):
+            self.assertTrue(Product.objects.filter(name='kiwitcms-bot/example').exists())
+            self.assertTrue(Product.objects.filter(name='kiwitcms-bot/test').exists())
+
+        # and not on other tenants
+        for tenant in [self.tenant, self.private_tenant]:
+            with tenant_context(tenant):
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+
+    def test_sender_only_has_access_to_private_tenant(self):
+        with schema_context('public'):
+            # make sure social_user can access private_tenant
+            self.private_tenant.authorized_users.add(self.social_user.user)
+
+        # assert products don't exist initially
+        for tenant in [self.public_tenant, self.tenant, self.private_tenant]:
+            with tenant_context(tenant):
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+
+        payload = """
+{
+  "action": "created",
+  "installation": {
+    "id": 5651305,
+    "account": {
+      "login": "kiwitcms-bot",
+      "id": 44892260,
+      "site_admin": false
+    },
+    "repository_selection": "all",
+    "single_file_name": null
+  },
+  "repositories": [
+    {
+      "id": 224524413,
+      "node_id": "MDEwOlJlcG9zaXRvcnkyMjQ1MjQ0MTM=",
+      "name": "example",
+      "full_name": "kiwitcms-bot/example",
+      "private": false
+    },
+    {
+      "id": 225221463,
+      "node_id": "MDEwOlJlcG9zaXRvcnkyMjUyMjE0NjM=",
+      "name": "test",
+      "full_name": "kiwitcms-bot/test",
+      "private": false
+    }
+  ],
+  "requester": null,
+  "sender": {
+    "login": "%s",
+    "id": %d,
+    "site_admin": false
+  }
+}""".strip() % (self.social_user.user.username, self.social_user.uid)
+
+        signature = github.calculate_signature(
+            settings.KIWI_GITHUB_APP_SECRET,
+            json.dumps(json.loads(payload)).encode())
+
+        response = self.client.post(self.url,
+                                    json.loads(payload),
+                                    content_type='application/json',
+                                    HTTP_X_HUB_SIGNATURE=signature,
+                                    HTTP_X_GITHUB_EVENT='installation')
+
+        self.assertContains(response, 'ok')
+
+        with schema_context('public'):
+            self.assertTrue(
+                AppInstallation.objects.filter(installation=5651305,
+                                               sender=self.social_user.uid,
+                                               tenant_pk=self.private_tenant.pk).exists())
+
+        # assert products have been imported *ONLY* on private.tenant
+        for tenant in [self.public_tenant, self.tenant]:
+            with tenant_context(tenant):
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+
+        with tenant_context(self.private_tenant):
+            self.assertTrue(Product.objects.filter(name='kiwitcms-bot/example').exists())
+            self.assertTrue(Product.objects.filter(name='kiwitcms-bot/test').exists())
+
+    def test_sender_has_access_to_multiple_tenants(self):
+        with schema_context('public'):
+            self.private_tenant.authorized_users.add(self.social_user.user)
+            self.tenant.authorized_users.add(self.social_user.user)
+
+        # assert products don't exist initially
+        for tenant in [self.public_tenant, self.tenant, self.private_tenant]:
+            with tenant_context(tenant):
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+
+        payload = """
+{
+  "action": "created",
+  "installation": {
+    "id": 5651399,
+    "account": {
+      "login": "kiwitcms-bot",
+      "id": 44892260,
+      "site_admin": false
+    },
+    "repository_selection": "all",
+    "single_file_name": null
+  },
+  "repositories": [
+    {
+      "id": 224524413,
+      "node_id": "MDEwOlJlcG9zaXRvcnkyMjQ1MjQ0MTM=",
+      "name": "example",
+      "full_name": "kiwitcms-bot/example",
+      "private": false
+    },
+    {
+      "id": 225221463,
+      "node_id": "MDEwOlJlcG9zaXRvcnkyMjUyMjE0NjM=",
+      "name": "test",
+      "full_name": "kiwitcms-bot/test",
+      "private": false
+    }
+  ],
+  "requester": null,
+  "sender": {
+    "login": "%s",
+    "id": %d,
+    "site_admin": false
+  }
+}""".strip() % (self.social_user.user.username, self.social_user.uid)
+
+        signature = github.calculate_signature(
+            settings.KIWI_GITHUB_APP_SECRET,
+            json.dumps(json.loads(payload)).encode())
+
+        response = self.client.post(self.url,
+                                    json.loads(payload),
+                                    content_type='application/json',
+                                    HTTP_X_HUB_SIGNATURE=signature,
+                                    HTTP_X_GITHUB_EVENT='installation')
+
+        self.assertContains(response, 'ok')
+
+        with schema_context('public'):
+            self.assertTrue(
+                AppInstallation.objects.filter(installation=5651399,
+                                               sender=self.social_user.uid,
+                                               tenant_pk=None).exists())
+
+        # assert products have *NOT* been imported anywhere
+        for tenant in [self.public_tenant, self.tenant, self.private_tenant]:
+            with tenant_context(tenant):
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
