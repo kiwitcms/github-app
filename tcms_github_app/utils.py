@@ -30,9 +30,15 @@ def find_user_from_sender(sender_id):
 def find_tenant(data):
     """
         Return a Tenant for this installation or None
-        if installation isn't configured yet.
+        if installation doesn't exist/isn't configured yet.
     """
-    app_inst = AppInstallation.objects.get(installation=data.payload['installation']['id'])
+    app_inst = AppInstallation.objects.filter(
+        installation=data.payload['installation']['id']
+    ).first()
+
+    if not app_inst:
+        return None
+
     return Tenant.objects.filter(pk=app_inst.tenant_pk).first()
 
 
