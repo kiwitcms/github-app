@@ -132,8 +132,10 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
             user=UserFactory(username='kiwitcms-bot')
         )
 
-    def test_creates_new_product(self):
+    def test_installation_configured_then_creates_new_product(self):
         self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+        with tenant_context(self.tenant):
+            self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
 
         # simulate already configured installation owned by the same user
         # who owns the GitHub repository
@@ -182,3 +184,110 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
         with tenant_context(self.tenant):
             new_product = Product.objects.get(name='kiwitcms-bot/test')
             self.assertEqual(new_product.description, 'A test repository')
+
+    def test_installation_configured_then_skip_forks(self):
+        for schema_name in ['public', self.tenant.schema_name]:
+            with schema_context(schema_name):
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/fork').exists())
+
+        # simulate already configured installation owned by the same user
+        # who owns the GitHub repository
+        app_inst = AppInstallationFactory(
+            sender=self.social_user.uid,
+            tenant_pk=self.tenant.pk,
+        )
+
+        payload = """
+{
+  "action": "created",
+  "repository": {
+    "id": 225221463,
+    "full_name": "kiwitcms-bot/fork",
+    "private": false,
+    "owner": {
+    },
+    "html_url": "https://github.com/kiwitcms-bot/fork",
+    "description": "A fork repository",
+    "fork": true
+  },
+  "sender": {
+    "login": "%s",
+    "id": %d
+  },
+  "installation": {
+    "id": %d,
+    "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uNTQ5ODkwOA=="
+  }
+}""".strip() % (self.social_user.user.username,
+                self.social_user.uid,
+                app_inst.installation)
+
+        signature = github.calculate_signature(
+            settings.KIWI_GITHUB_APP_SECRET,
+            json.dumps(json.loads(payload)).encode())
+
+        response = self.client.post(self.url,
+                                    json.loads(payload),
+                                    content_type='application/json',
+                                    HTTP_X_HUB_SIGNATURE=signature,
+                                    HTTP_X_GITHUB_EVENT='repository')
+
+        self.assertContains(response, 'ok')
+
+        # assert no products for forks
+        for schema_name in ['public', self.tenant.schema_name]:
+            with schema_context(schema_name):
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/fork').exists())
+
+    def test_installation_unconfigured_then_nothing(self):
+        self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+        with tenant_context(self.tenant):
+            self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+
+        # simulate unconfigured installation owned by the same user
+        # who owns the GitHub repository
+        app_inst = AppInstallationFactory(
+            sender=self.social_user.uid,
+        )
+
+        payload = """
+{
+  "action": "created",
+  "repository": {
+    "id": 225221463,
+    "full_name": "kiwitcms-bot/test",
+    "private": false,
+    "owner": {
+    },
+    "html_url": "https://github.com/kiwitcms-bot/test",
+    "description": "A test repository",
+    "fork": false
+  },
+  "sender": {
+    "login": "%s",
+    "id": %d
+  },
+  "installation": {
+    "id": %d,
+    "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uNTQ5ODkwOA=="
+  }
+}""".strip() % (self.social_user.user.username,
+                self.social_user.uid,
+                app_inst.installation)
+
+        signature = github.calculate_signature(
+            settings.KIWI_GITHUB_APP_SECRET,
+            json.dumps(json.loads(payload)).encode())
+
+        response = self.client.post(self.url,
+                                    json.loads(payload),
+                                    content_type='application/json',
+                                    HTTP_X_HUB_SIGNATURE=signature,
+                                    HTTP_X_GITHUB_EVENT='repository')
+
+        self.assertContains(response, 'ok')
+
+        # assert no new products have been created
+        self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+        with tenant_context(self.tenant):
+            self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
