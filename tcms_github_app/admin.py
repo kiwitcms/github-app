@@ -6,6 +6,9 @@ from django.urls import reverse
 from django.contrib import admin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 
+from social_django.models import UserSocialAuth
+
+from tcms_github_app.models import AppInstallation
 from tcms_github_app.models import WebhookPayload
 
 
@@ -30,4 +33,23 @@ class WebhookPayloadAdmin(admin.ModelAdmin):
             reverse('admin:tcms_github_app_webhookpayload_changelist'))
 
 
+class AppInstallationAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'installation', 'sender', 'tenant_pk')
+    ordering = ['-installation']
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+
+        if not obj:
+            return False
+
+        social_user = UserSocialAuth.objects.filter(user=request.user).first()
+        if not social_user:
+            return False
+
+        return obj.sender == int(social_user.uid)
+
+
 admin.site.register(WebhookPayload, WebhookPayloadAdmin)
+admin.site.register(AppInstallation, AppInstallationAdmin)

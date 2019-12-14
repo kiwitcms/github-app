@@ -45,3 +45,6 @@ class AppInstallation(models.Model):
     sender = models.PositiveIntegerField(db_index=True)
     # None - means unconfigured tenant, otherwise has value
     tenant_pk = models.PositiveIntegerField(null=True, blank=True, db_index=True)
+
+    def __str__(self):
+        return "GitHub App %d" % self.installation

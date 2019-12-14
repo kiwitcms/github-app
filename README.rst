@@ -28,8 +28,26 @@ Communication from GitHub to this add-on is via webhooks.
 
 Add-on behavior:
 
-- Existing & newly created repositories are added as products in Kiwi TCMS
-- Fork repositories are NOT added as products in Kiwi TCMS
+- Auto-configure which tenant to use for database operations, either
+  'public' or a single private tenant to which user has access.
+- If unable to auto-configure display warning and redirect to configuration
+  page once the GitHub account who installed this integration onto their
+  GitHub repository logs into Kiwi TCMS
+- Existing & newly created repositories are added as products in Kiwi TCMS.
+  Fork repositories are skipped
+
+
+
+Installation
+------------
+
+::
+
+    pip install kiwitcms-github-app
+
+Then make sure the following settings are configured::
+
+    MIDDLEWARE.append('tcms_github_app.middleware.CheckGitHubAppMiddleware')
 
 
 Changelog
