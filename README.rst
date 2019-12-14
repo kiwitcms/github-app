@@ -28,7 +28,8 @@ Communication from GitHub to this add-on is via webhooks.
 
 Add-on behavior:
 
-- Newly created repositories are added as products in Kiwi TCMS
+- Existing & newly created repositories are added as products in Kiwi TCMS
+- Fork repositories are NOT added as products in Kiwi TCMS
 
 
 Changelog
