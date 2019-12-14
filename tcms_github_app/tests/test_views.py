@@ -137,9 +137,9 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
         )
 
     def test_installation_configured_then_creates_new_product(self):
-        self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
-        with tenant_context(self.tenant):
-            self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+        for schema_name in ['public', self.tenant.schema_name]:
+            with schema_context(schema_name):
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
 
         # simulate already configured installation owned by the same user
         # who owns the GitHub repository
@@ -244,9 +244,9 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/fork').exists())
 
     def test_installation_unconfigured_then_nothing(self):
-        self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
-        with tenant_context(self.tenant):
-            self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+        for schema_name in ['public', self.tenant.schema_name]:
+            with schema_context(schema_name):
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
 
         # simulate unconfigured installation owned by the same user
         # who owns the GitHub repository
@@ -292,9 +292,9 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
         self.assertContains(response, 'ok')
 
         # assert no new products have been created
-        self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
-        with tenant_context(self.tenant):
-            self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+        for schema_name in ['public', self.tenant.schema_name]:
+            with schema_context(schema_name):
+                self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
 
 
 class HandleInstallationCreatedTestCase(AnonymousTestCase):
