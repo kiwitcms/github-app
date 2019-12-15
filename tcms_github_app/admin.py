@@ -50,6 +50,9 @@ class AppInstallationAdmin(admin.ModelAdmin):
 
         return obj.sender == int(social_user.uid)
 
+    def get_readonly_fields(self, request, obj=None):
+        return ('installation', 'sender')
+
 
 admin.site.register(WebhookPayload, WebhookPayloadAdmin)
 admin.site.register(AppInstallation, AppInstallationAdmin)
