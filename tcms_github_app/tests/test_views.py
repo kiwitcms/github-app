@@ -307,23 +307,25 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
 
         cls.url = reverse('github_app_webhook')
 
-        # remove pre-existing tenants so they don't mess up the tests
-        get_tenant_model().objects.all().delete()
-
         with schema_context('public'):
+            # remove pre-existing tenants so they don't mess up the tests
+            get_tenant_model().objects.exclude(schema_name='public').delete()
+
             cls.social_user = UserSocialAuthFactory(
                 user=UserFactory()
             )
 
             # public tenant object b/c schema exists but not the Tenant itself!
-            cls.public_tenant = get_tenant_model()(schema_name='public')
-            cls.setup_tenant(cls.public_tenant)
-            cls.public_tenant.save()
+            cls.public_tenant = get_tenant_model().objects.filter(schema_name='public').first()
+            if not cls.public_tenant:
+                cls.public_tenant = get_tenant_model()(schema_name='public')
+                cls.setup_tenant(cls.public_tenant)
+                cls.public_tenant.save()
 
-            cls.public_domain = get_tenant_domain_model()(tenant=cls.public_tenant,
+                public_domain = get_tenant_domain_model()(tenant=cls.public_tenant,
                                                           domain='public.test.com')
-            cls.setup_domain(cls.public_domain)
-            cls.public_domain.save()
+                cls.setup_domain(public_domain)
+                public_domain.save()
 
             # private tenant for some tests
             cls.private_tenant = get_tenant_model()(schema_name='private')
