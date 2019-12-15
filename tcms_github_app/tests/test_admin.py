@@ -21,19 +21,21 @@ class AppInstallationAdminTestCase(LoggedInTestCase):
     def setUpClass(cls):
         get_tenant_model().auto_create_schema = True
 
-        # remove pre-existing tenants so they don't mess up the tests
-        get_tenant_model().objects.all().delete()
-
         with schema_context('public'):
-            # public tenant object b/c schema exists but not the Tenant itself!
-            public_tenant = get_tenant_model()(schema_name='public')
-            cls.setup_tenant(public_tenant)
-            public_tenant.save()
+            # remove pre-existing tenants so they don't mess up the tests
+            get_tenant_model().objects.exclude(schema_name='public').delete()
 
-            public_domain = get_tenant_domain_model()(tenant=public_tenant,
-                                                      domain='public.test.com')
-            cls.setup_domain(public_domain)
-            public_domain.save()
+            # public tenant object b/c schema exists but not the Tenant itself!
+            public_tenant = get_tenant_model().objects.filter(schema_name='public').first()
+            if not public_tenant:
+                public_tenant = get_tenant_model()(schema_name='public')
+                cls.setup_tenant(public_tenant)
+                public_tenant.save()
+
+                public_domain = get_tenant_domain_model()(tenant=public_tenant,
+                                                          domain='public.test.com')
+                cls.setup_domain(public_domain)
+                public_domain.save()
 
         super().setUpClass()
 
@@ -45,9 +47,8 @@ class AppInstallationAdminTestCase(LoggedInTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        super().tearDownClass()
-        get_tenant_model().objects.all().delete()
         get_tenant_model().auto_create_schema = False
+        super().tearDownClass()
 
     def tearDown(self):
         self.tester.is_superuser = False
