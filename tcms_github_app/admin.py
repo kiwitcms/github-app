@@ -111,6 +111,25 @@ class AppInstallationAdmin(admin.ModelAdmin):
             }),
         ]
 
+    def add_view(self, request, form_url='', extra_context=None):
+        return HttpResponseForbidden()
+
+    def has_add_permission(self, request):
+        return False
+
+    def delete_view(self, request, object_id, extra_context=None):
+        return HttpResponseForbidden()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    @admin.options.csrf_protect_m
+    def changelist_view(self, request, extra_context=None):
+        if request.user.is_superuser:
+            return super().changelist_view(request, extra_context)
+
+        return HttpResponseForbidden()
+
 
 admin.site.register(WebhookPayload, WebhookPayloadAdmin)
 admin.site.register(AppInstallation, AppInstallationAdmin)
