@@ -49,6 +49,14 @@ Then make sure the following settings are configured::
 
     MIDDLEWARE.append('tcms_github_app.middleware.CheckGitHubAppMiddleware')
 
+In your ``urls.py`` add something like this::
+
+    from tcms_github_app import urls as githubapp_urls
+
+    urlpatterns += [
+        url(r'^github/app/', include(githubapp_urls)),
+    ]
+
 
 Changelog
 ---------
