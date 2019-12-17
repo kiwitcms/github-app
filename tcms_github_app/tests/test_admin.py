@@ -105,11 +105,15 @@ class AppInstallationAdminTestCase(LoggedInTestCase):
         response = self.client.get(
             reverse('admin:tcms_github_app_appinstallation_change', args=[self.app_inst.pk]))
         self.assert_fields(response, self.app_inst)
+        self.assertNotContains(response,
+                               '>[test] </option>')
 
     def test_change_authorized_for_owner(self):
         response = self.client.get(
             reverse('admin:tcms_github_app_appinstallation_change', args=[self.app_inst_tester.pk]))
         self.assert_fields(response, self.app_inst_tester)
+        self.assertContains(response,
+                            '>[test] </option>')
 
     def test_change_unauthorized_for_non_owner(self):
         response = self.client.get(
