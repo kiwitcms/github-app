@@ -119,3 +119,21 @@ class AppInstallationAdminTestCase(LoggedInTestCase):
         response = self.client.get(
             reverse('admin:tcms_github_app_appinstallation_change', args=[self.app_inst.pk]))
         self.assertIsInstance(response, HttpResponseForbidden)
+
+    def test_save_by_owner_updates_installation(self):
+        self.assertIsNone(self.app_inst_tester.tenant_pk)
+
+        response = self.client.post(
+            reverse('admin:tcms_github_app_appinstallation_change', args=[self.app_inst_tester.pk]),
+            {
+                'tenant_pk': self.tenant.pk,
+            },
+            follow=True,
+        )
+
+        self.assertContains(response, 'The app installation')
+        self.assertContains(response, self.app_inst_tester)
+        self.assertContains(response, 'was changed successfully.')
+
+        self.app_inst_tester.refresh_from_db()
+        self.assertEqual(self.app_inst_tester.tenant_pk, self.tenant.pk)
