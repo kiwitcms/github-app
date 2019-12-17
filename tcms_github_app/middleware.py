@@ -8,8 +8,6 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from social_django.models import UserSocialAuth
-
 from tcms_github_app.models import AppInstallation
 
 
@@ -26,7 +24,7 @@ class CheckGitHubAppMiddleware:
             return self.get_response(request)
 
         app_inst = None
-        social_user = UserSocialAuth.objects.filter(user=request.user).first()
+        social_user = request.user.social_auth.first()
         if social_user:
             app_inst = AppInstallation.objects.filter(
                 sender=social_user.uid,

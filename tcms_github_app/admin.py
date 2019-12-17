@@ -101,7 +101,7 @@ class AppInstallationAdmin(admin.ModelAdmin):
         if not obj:
             return False
 
-        social_user = UserSocialAuth.objects.filter(user=request.user).first()
+        social_user = request.user.social_auth.first()
         if not social_user:
             return False
 
