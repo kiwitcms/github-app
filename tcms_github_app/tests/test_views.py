@@ -15,9 +15,12 @@ from django_tenants.utils import get_tenant_domain_model
 from django_tenants.utils import schema_context
 from django_tenants.utils import tenant_context
 
+from social_django.models import UserSocialAuth
+
 from tcms.utils import github
 from tcms.management.models import Product
 
+from tcms_tenants.tests import LoggedInTestCase
 from tcms_tenants.tests import UserFactory
 
 from tcms_github_app.models import AppInstallation
@@ -641,3 +644,52 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
             with tenant_context(tenant):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+
+
+class ApplicationEditTestCase(LoggedInTestCase):
+    def tearDown(self):
+        UserSocialAuth.objects.filter(user=self.tester).delete()
+        AppInstallation.objects.all().delete()
+
+    def test_warns_user_without_social_auth(self):
+        response = self.client.get(reverse('github_app_edit'), follow=True)
+
+        self.assertRedirects(response, '/')
+        self.assertContains(response, 'You have not logged-in via GitHub account')
+
+    def test_warns_user_without_application(self):
+        UserSocialAuthFactory(user=self.tester)
+
+        response = self.client.get(reverse('github_app_edit'), follow=True)
+
+        self.assertRedirects(response, '/')
+        self.assertContains(response, 'You have not installed Kiwi TCMS into your GitHub account')
+
+    def test_redirects_if_single_application(self):
+        social_user = UserSocialAuthFactory(user=self.tester)
+        app_inst = AppInstallationFactory(sender=social_user.uid, tenant_pk=self.tenant.pk)
+
+        response = self.client.get(reverse('github_app_edit'), follow=True)
+
+        self.assertRedirects(
+            response,
+            reverse('admin:tcms_github_app_appinstallation_change',
+                    args=[app_inst.pk]))
+        self.assertContains(response, 'Change app installation')
+        self.assertContains(response, 'For additional configuration see')
+
+    def test_warns_user_with_multiple_applications(self):
+        social_user = UserSocialAuthFactory(user=self.tester)
+
+        app_one = AppInstallationFactory(sender=social_user.uid, tenant_pk=self.tenant.pk)
+        app_two = AppInstallationFactory(sender=social_user.uid, tenant_pk=self.tenant.pk)
+        app_three = AppInstallationFactory(sender=social_user.uid, tenant_pk=self.tenant.pk)
+
+        response = self.client.get(reverse('github_app_edit'), follow=True)
+
+        self.assertRedirects(response, '/')
+        self.assertContains(response, 'Multiple GitHub App installations detected! See below:')
+        for app in [app_one, app_two, app_three]:
+            expected_url = reverse('admin:tcms_github_app_appinstallation_change',
+                                   args=[app.pk])
+            self.assertContains(response, expected_url)

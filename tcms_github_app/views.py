@@ -1,19 +1,81 @@
 # Copyright (c) 2019 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
+# pylint: disable=unused-argument
 
 import json
 
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseForbidden
+from django.contrib import messages
+from django.http import HttpResponse
+from django.http import HttpResponseForbidden
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import View
 
 from tcms.utils import github
+
+from tcms_github_app.models import AppInstallation
 from tcms_github_app.models import WebhookPayload
 from tcms_github_app import utils
 
 
-# pylint: disable=unused-argument
+class ApplicationEdit(View):
+    """
+        If there is an App installation made on GitHub by the current user
+        then allow them to edit it.
+    """
+    def get(self, request, *args, **kwargs):
+        social_user = request.user.social_auth.first()
+        if not social_user:
+            github_url = reverse('social:begin', args=['github'])
+            messages.add_message(
+                request,
+                messages.WARNING,
+                _(
+                    'You have not logged-in via GitHub account! '
+                    '<a href="%s">Click here</a>!') % github_url,
+            )
+            return HttpResponseRedirect('/')
+
+        apps = AppInstallation.objects.filter(sender=social_user.uid)
+        apps_count = apps.count()
+
+        if apps_count == 0:  # pylint: disable=no-else-return
+            github_url = 'https://github.com/apps/kiwi-tcms'
+            messages.add_message(
+                request,
+                messages.WARNING,
+                _(
+                    'You have not installed Kiwi TCMS into your GitHub account! '
+                    '<a href="%s">Click here</a>!' % github_url),
+            )
+            return HttpResponseRedirect('/')
+        elif apps_count == 1:
+            app_inst = apps.first()
+            return HttpResponseRedirect(
+                reverse('admin:tcms_github_app_appinstallation_change',
+                        args=[app_inst.pk]))
+
+        # multiple apps
+        messages.add_message(
+            request,
+            messages.WARNING,
+            _('Multiple GitHub App installations detected! See below:'),
+        )
+
+        for app_inst in apps:
+            app_url = reverse('admin:tcms_github_app_appinstallation_change',
+                              args=[app_inst.pk])
+            messages.add_message(
+                request,
+                messages.WARNING,
+                _('Edit GitHub App <a href="%s">%s</a>') % (app_url, app_inst),
+            )
+        return HttpResponseRedirect('/')
+
+
 class WebHook(View):
     """
         Handles `marketplace_purchase` web hook as described at:

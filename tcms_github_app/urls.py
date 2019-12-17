@@ -7,5 +7,6 @@ from tcms_github_app import views
 
 
 urlpatterns = [
+    url(r'^appedit/$', views.ApplicationEdit.as_view(), name='github_app_edit'),
     url(r'^webhook/$', views.WebHook.as_view(), name='github_app_webhook'),
 ]
