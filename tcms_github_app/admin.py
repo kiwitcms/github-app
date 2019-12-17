@@ -6,9 +6,8 @@ from django import forms
 from django.contrib import admin
 from django.db.models import Q
 from django.forms.utils import ErrorList
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponseForbidden
 
 from django_tenants.utils import get_tenant_model
 from social_django.models import UserSocialAuth
@@ -21,10 +20,6 @@ class WebhookPayloadAdmin(admin.ModelAdmin):
     list_display = ('pk', 'received_on', 'sender', 'event', 'action')
     ordering = ['-pk']
 
-    def add_view(self, request, form_url='', extra_context=None):
-        return HttpResponseRedirect(
-            reverse('admin:tcms_github_app_webhookpayload_changelist'))
-
     @admin.options.csrf_protect_m
     def changelist_view(self, request, extra_context=None):
         if request.user.is_superuser:
@@ -32,10 +27,23 @@ class WebhookPayloadAdmin(admin.ModelAdmin):
 
         return HttpResponseForbidden('Unauthorized')
 
-    @admin.options.csrf_protect_m
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        return HttpResponseForbidden()
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def add_view(self, request, form_url='', extra_context=None):
+        return HttpResponseForbidden()
+
+    def has_add_permission(self, request):
+        return False
+
     def delete_view(self, request, object_id, extra_context=None):
-        return HttpResponseRedirect(
-            reverse('admin:tcms_github_app_webhookpayload_changelist'))
+        return HttpResponseForbidden()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class AppInstallationChangeForm(forms.ModelForm):
