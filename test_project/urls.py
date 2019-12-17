@@ -12,4 +12,6 @@ from tcms_github_app import urls as githubapp_urls
 urlpatterns += [
     url(r'^github/app/', include(githubapp_urls)),
     url(r'^tenants/', include(tenants_urls, namespace='tenants')),
+
+    url('', include('social_django.urls', namespace='social')),
 ]
