@@ -46,4 +46,5 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
     ],
+    entry_points={"kiwitcms.plugins": ["kiwitcms_github_app = tcms_github_app"]},
 )
