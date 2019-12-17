@@ -12,6 +12,7 @@ from django_tenants.utils import schema_context
 
 from tcms_tenants.tests import LoggedInTestCase
 
+from tcms_github_app.models import WebhookPayload
 from tcms_github_app.tests import AppInstallationFactory
 from tcms_github_app.tests import UserSocialAuthFactory
 
@@ -137,3 +138,60 @@ class AppInstallationAdminTestCase(LoggedInTestCase):
 
         self.app_inst_tester.refresh_from_db()
         self.assertEqual(self.app_inst_tester.tenant_pk, self.tenant.pk)
+
+
+class WebhookPayloadAdminTestCase(LoggedInTestCase):
+    def tearDown(self):
+        self.tester.is_superuser = False
+        self.tester.save()
+
+    def test_changelist_unauthorized_for_regular_user(self):
+        response = self.client.get(
+            reverse('admin:tcms_github_app_webhookpayload_changelist'))
+        self.assertIsInstance(response, HttpResponseForbidden)
+
+    def test_changelist_authorized_for_superuser(self):
+        self.tester.is_superuser = True
+        self.tester.save()
+
+        response = self.client.get(
+            reverse('admin:tcms_github_app_webhookpayload_changelist'))
+        self.assertContains(response, 'Webhook payloads')
+
+    def test_add_unauthorized_for_superuser(self):
+        self.tester.is_superuser = True
+        self.tester.save()
+
+        response = self.client.get(
+            reverse('admin:tcms_github_app_webhookpayload_add'))
+        self.assertIsInstance(response, HttpResponseForbidden)
+
+    def test_delete_unauthorized_for_superuser(self):
+        wh_payload = WebhookPayload.objects.create(
+            event='repository',
+            action='created',
+            sender=999999,
+            payload={'hello': 'world'},
+        )
+
+        self.tester.is_superuser = True
+        self.tester.save()
+
+        response = self.client.get(
+            reverse('admin:tcms_github_app_webhookpayload_delete', args=[wh_payload.pk]))
+        self.assertIsInstance(response, HttpResponseForbidden)
+
+    def test_change_unauthorized_for_superuser(self):
+        wh_payload = WebhookPayload.objects.create(
+            event='repository',
+            action='created',
+            sender=999999,
+            payload={'change': 'me'},
+        )
+
+        self.tester.is_superuser = True
+        self.tester.save()
+
+        response = self.client.get(
+            reverse('admin:tcms_github_app_webhookpayload_change', args=[wh_payload.pk]))
+        self.assertIsInstance(response, HttpResponseForbidden)
