@@ -13,8 +13,10 @@ flake8:
 
 .PHONY: pylint
 pylint:
-	pylint --load-plugins=pylint_django -d missing-docstring -d duplicate-code *.py \
-	    -d wildcard-import -d unused-wildcard-import tcms_github_app/ test_project/
+	pylint --load-plugins=pylint_django \
+	        -d missing-docstring -d duplicate-code \
+	        -d wildcard-import -d unused-wildcard-import \
+	        *.py tcms_github_app/ test_project/
 
 .PHONY: test_for_missing_migrations
 test_for_missing_migrations:
