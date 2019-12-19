@@ -37,6 +37,17 @@ Add-on behavior:
   Fork repositories are skipped
 
 
+Vote for other ideas:
+
+- When TE is updated then post status to pull request. See
+  `Issue #9 <https://github.com/kiwitcms/github-app/issues/9>`_
+- When opening PR then create a new TR. See
+  `Issue #10 <https://github.com/kiwitcms/github-app/issues/10>`_
+- When opening PR then auto-scan with kiwitcms-bot. See
+  `Issue #11 <https://github.com/kiwitcms/github-app/issues/11>`_
+- When new Tag/Release then perform artifact testing. See
+  `Issue #12 <https://github.com/kiwitcms/github-app/issues/12>`_
+
 
 Installation
 ------------
