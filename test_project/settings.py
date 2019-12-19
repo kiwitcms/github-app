@@ -35,10 +35,11 @@ TENANT_DOMAIN_MODEL = "tcms_tenants.Domain"
 INSTALLED_APPS.insert(0, 'django_tenants')
 INSTALLED_APPS.insert(1, 'tcms_tenants')
 
-INSTALLED_APPS.extend([
-    'social_django',
-    'tcms_github_app',
-])
+INSTALLED_APPS.append('social_django')
+
+# because kiwitcms.plugins loading code
+if 'tcms_github_app' not in INSTALLED_APPS:
+    INSTALLED_APPS.append('tcms_github_app')
 
 PUBLIC_VIEWS.extend([
     'tcms_github_app.views.WebHook'
