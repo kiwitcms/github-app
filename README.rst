@@ -35,6 +35,7 @@ Add-on behavior:
   GitHub repository logs into Kiwi TCMS
 - Existing & newly created repositories are added as products in Kiwi TCMS.
   Fork repositories are skipped
+- Newly created git tags are added as product versions in Kiwi TCMS
 
 
 Vote for other ideas:

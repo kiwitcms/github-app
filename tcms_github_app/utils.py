@@ -9,6 +9,7 @@ from social_django.models import UserSocialAuth
 
 from tcms.management.models import Classification
 from tcms.management.models import Product
+from tcms.management.models import Version
 
 from tcms_tenants.models import Tenant
 from tcms_github_app.models import AppInstallation
@@ -45,18 +46,18 @@ def find_tenant(data):
 def _product_from_repo(repo_data):
     # skip forks
     if repo_data.get('fork', False):
-        return
+        return None
 
     name = repo_data['full_name']
     description = repo_data.get('description', '')
     classification, _created = Classification.objects.get_or_create(name='Imported from GitHub')
+    product, _created = Product.objects.get_or_create(
+        name=name,
+        description=description,
+        classification=classification,
+    )
 
-    if not Product.objects.filter(name=name).exists():
-        Product.objects.create(
-            name=name,
-            description=description,
-            classification=classification,
-        )
+    return product
 
 
 def create_product_from_repository(data):
@@ -103,3 +104,21 @@ def create_installation(data):
         with tenant_context(tenant):
             for repository in data.payload['repositories']:
                 _product_from_repo(repository)
+
+
+def create_version_from_tag(data):
+    tenant = find_tenant(data)
+
+    # can't handle requests from unconfigured installation
+    if not tenant:
+        return
+
+    with tenant_context(tenant):
+        product = _product_from_repo(data.payload['repository'])
+        if not product:
+            return
+
+        Version.objects.create(
+            value=data.payload['ref'],
+            product=product
+        )

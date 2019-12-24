@@ -89,6 +89,8 @@ class WebHook(View):
             utils.create_product_from_repository(payload)
         elif payload.event == "installation" and payload.action == "created":
             utils.create_installation(payload)
+        elif payload.event == "create" and payload.payload.get('ref_type') == "tag":
+            utils.create_version_from_tag(payload)
 
     def post(self, request, *args, **kwargs):
         """
@@ -115,7 +117,7 @@ class WebHook(View):
 
         wh_payload = WebhookPayload.objects.create(
             event=event,
-            action=payload['action'],
+            action=payload.get('action'),
             sender=sender,
             payload=payload,
         )
