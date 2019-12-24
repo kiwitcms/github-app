@@ -63,6 +63,7 @@ Installation
 inside Kiwi TCMS's docker image and make sure the following settings are configured::
 
     MIDDLEWARE.append('tcms_github_app.middleware.CheckGitHubAppMiddleware')
+    PUBLIC_VIEWS.append('tcms_github_app.views.WebHook')
 
 everything else will be taken care for by Kiwi TCMS plugin loading code!
 
