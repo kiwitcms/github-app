@@ -49,6 +49,8 @@ Vote for other ideas:
   `Issue #11 <https://github.com/kiwitcms/github-app/issues/11>`_
 - When new Tag/Release then perform artifact testing. See
   `Issue #12 <https://github.com/kiwitcms/github-app/issues/12>`_
+- Auto-configure bug tracker for new product/repository. See
+  `Issue #15 <https://github.com/kiwitcms/github-app/issues/15>`_
 
 
 Installation
