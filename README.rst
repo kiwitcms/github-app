@@ -36,6 +36,7 @@ Add-on behavior:
 - Existing & newly created repositories are added as products in Kiwi TCMS.
   Fork repositories are skipped
 - Newly created git tags are added as product versions in Kiwi TCMS
+- 1-click bug reports to GitHub Issues
 
 
 Vote for other ideas:
