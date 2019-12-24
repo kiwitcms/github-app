@@ -12,7 +12,7 @@ class WebhookPayload(models.Model):
         Holds information about received webhooks
     """
     event = models.CharField(max_length=64, db_index=True)
-    action = models.CharField(max_length=64, db_index=True)
+    action = models.CharField(max_length=64, db_index=True, null=True, blank=True)
     # GitHub UID, match with UserSocialAuth.uid
     sender = models.PositiveIntegerField(db_index=True)
 

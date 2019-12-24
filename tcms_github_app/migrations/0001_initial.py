@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                                         serialize=False,
                                         verbose_name='ID')),
                 ('event', models.CharField(db_index=True, max_length=64)),
-                ('action', models.CharField(db_index=True, max_length=64)),
+                ('action', models.CharField(db_index=True, max_length=64, null=True, blank=True)),
                 ('sender', models.PositiveIntegerField(db_index=True)),
                 ('received_on', models.DateTimeField(auto_now_add=True,
                                                      db_index=True)),
