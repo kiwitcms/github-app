@@ -56,11 +56,30 @@ Installation
 
     pip install kiwitcms-github-app
 
-Then make sure the following settings are configured::
+inside Kiwi TCMS's docker image and make sure the following settings are configured::
 
     MIDDLEWARE.append('tcms_github_app.middleware.CheckGitHubAppMiddleware')
 
 everything else will be taken care for by Kiwi TCMS plugin loading code!
+
+
+GitHub App configuration
+------------------------
+
+- User authorization callback URL: https://public.tenant.kiwitcms.org/complete/github/
+- Request user authorization (OAuth) during installation - True
+- Webhook URL - https://public.tenant.kiwitcms.org/kiwitcms_github_app/webhook/
+- Permissions:
+
+  - Contents: Read-only
+  - Metadata: Read-only
+  - Email addresses: Read-only
+
+- Subscribe to events:
+
+  - Meta
+  - Create
+  - Repository
 
 
 Changelog
