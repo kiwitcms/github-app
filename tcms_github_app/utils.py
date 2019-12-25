@@ -60,7 +60,7 @@ def _product_from_repo(repo_data):
     if product:
         return product
 
-    description = repo_data.get('description', '')
+    description = repo_data.get('description', 'GitHub repository')
     classification, _created = Classification.objects.get_or_create(name='Imported from GitHub')
     return Product.objects.create(
         name=name,
