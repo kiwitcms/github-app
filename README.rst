@@ -95,6 +95,13 @@ Changelog
 ---------
 
 
+v0.0.2 (25 Dec 2019)
+~~~~~~~~~~~~~~~~~~~~
+
+- Do not fail if product already exists
+- Search UserSocialAuth by uid and provider
+
+
 v0.0.1 (24 Dec 2019)
 ~~~~~~~~~~~~~~~~~~~~
 
