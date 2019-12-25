@@ -25,7 +25,7 @@ class UserSocialAuthFactory(DjangoModelFactory):
         model = 'social_django.UserSocialAuth'
 
     user = factory.SubFactory(UserFactory)
-    provider = 'github'
+    provider = 'github-app'
     uid = factory.Sequence(lambda n: n)
 
 

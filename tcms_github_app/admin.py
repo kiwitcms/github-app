@@ -69,7 +69,10 @@ class AppInstallationChangeForm(forms.ModelForm):
                          renderer)
         if instance:
             # passed by ModelAdmin._chageform_view():L1581 when changing existing object
-            tenants = UserSocialAuth.objects.get(uid=instance.sender).user.tenant_set.all()
+            tenants = UserSocialAuth.objects.get(
+                provider='github-app',
+                uid=instance.sender
+            ).user.tenant_set.all()
             self.fields['tenant_pk'].queryset = get_tenant_model().objects.filter(
                 Q(schema_name='public') | Q(pk__in=tenants),
             )
