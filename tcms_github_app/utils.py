@@ -49,15 +49,24 @@ def _product_from_repo(repo_data):
         return None
 
     name = repo_data['full_name']
+
+    product = Product.objects.filter(name=name).first()
+
+    # in case product already exists we don't want to create another one b/c
+    # the name field is unique. When using .get_or_create() on all 3 fields
+    # (name, description, classification) a new object will be created unless the 3 match!
+    # this leads to "duplicate key value violates unique constraint" error:
+    # https://sentry.io/organizations/open-technologies-bulgaria-ltd/issues/1405498335/
+    if product:
+        return product
+
     description = repo_data.get('description', '')
     classification, _created = Classification.objects.get_or_create(name='Imported from GitHub')
-    product, _created = Product.objects.get_or_create(
+    return Product.objects.create(
         name=name,
         description=description,
         classification=classification,
     )
-
-    return product
 
 
 def create_product_from_repository(data):
