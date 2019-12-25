@@ -64,6 +64,10 @@ inside Kiwi TCMS's docker image and make sure the following settings are configu
 
     MIDDLEWARE.append('tcms_github_app.middleware.CheckGitHubAppMiddleware')
     PUBLIC_VIEWS.append('tcms_github_app.views.WebHook')
+    AUTHENTICATION_BACKENDS = [
+        'tcms_github_app.backend.GithubAppAuth',
+        ...
+    ]
 
 everything else will be taken care for by Kiwi TCMS plugin loading code!
 
@@ -71,7 +75,7 @@ everything else will be taken care for by Kiwi TCMS plugin loading code!
 GitHub App configuration
 ------------------------
 
-- User authorization callback URL: https://public.tenant.kiwitcms.org/complete/github/
+- User authorization callback URL: https://public.tenant.kiwitcms.org/complete/github-app/
 - Request user authorization (OAuth) during installation - True
 - Webhook URL - https://public.tenant.kiwitcms.org/kiwitcms_github_app/webhook/
 - Permissions:
