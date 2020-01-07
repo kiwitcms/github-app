@@ -11,9 +11,17 @@ GitHub App integration for Kiwi TCMS
     :target: https://pyup.io/repos/github/kiwitcms/github-app/
     :alt: Python updates
 
+.. image:: https://tidelift.com/badges/package/pypi/kiwitcms-github-marketplace
+    :target: https://tidelift.com/subscription/pkg/pypi-kiwitcms-github-marketplace?utm_source=pypi-kiwitcms-github-marketplace&utm_medium=github&utm_campaign=readme
+    :alt: Tidelift
+
 .. image:: https://opencollective.com/kiwitcms/tiers/sponsor/badge.svg?label=sponsors&color=brightgreen
    :target: https://opencollective.com/kiwitcms#contributors
    :alt: Become a sponsor
+
+.. image:: https://img.shields.io/twitter/follow/KiwiTCMS.svg
+    :target: https://twitter.com/KiwiTCMS
+    :alt: Kiwi TCMS on Twitter
 
 
 Introduction
