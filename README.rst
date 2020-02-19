@@ -103,6 +103,12 @@ Changelog
 ---------
 
 
+v0.0.5 (19 Feb 2020)
+~~~~~~~~~~~~~~~~~~~~
+
+- Address GitHub API deprecation not yet fixed in social-auth-core
+
+
 v0.0.4 (25 Dec 2019)
 ~~~~~~~~~~~~~~~~~~~~
 
