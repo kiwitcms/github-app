@@ -1,3 +1,5 @@
+from six.moves.urllib.parse import urljoin
+
 from social_core.backends.github import GithubOAuth2
 from social_core.utils import handle_http_errors
 
@@ -7,6 +9,12 @@ from social_core.utils import handle_http_errors
 class GithubAppAuth(GithubOAuth2):  # pylint: disable=abstract-method
     """GitHub App OAuth authentication backend"""
     name = 'github-app'
+
+    # copied from https://github.com/python-social-auth/social-core/pull/428
+    # and must be removed once we've got a newer social-auth-core
+    def _user_data(self, access_token, path=None):
+        url = urljoin(self.api_url(), 'user{0}'.format(path or ''))
+        return self.get_json(url, headers={'Authorization': 'token {0}'.format(access_token)})
 
     def validate_state(self):
         """
