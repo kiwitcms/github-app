@@ -7,4 +7,4 @@ PyGithub
 pylint
 pylint-django
 psycopg2
-kiwitcms>=7.2.1
+kiwitcms>=8.2
