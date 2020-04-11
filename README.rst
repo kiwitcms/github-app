@@ -73,7 +73,7 @@ inside Kiwi TCMS's docker image and make sure the following settings are configu
     MIDDLEWARE.append('tcms_github_app.middleware.CheckGitHubAppMiddleware')
     PUBLIC_VIEWS.append('tcms_github_app.views.WebHook')
     AUTHENTICATION_BACKENDS = [
-        'tcms_github_app.backend.GithubAppAuth',
+        'social_core.backends.github.GithubAppAuth',
         ...
     ]
 
