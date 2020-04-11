@@ -70,12 +70,9 @@ Installation
 
 inside Kiwi TCMS's docker image and make sure the following settings are configured::
 
-    MIDDLEWARE.append('tcms_github_app.middleware.CheckGitHubAppMiddleware')
-    PUBLIC_VIEWS.append('tcms_github_app.views.WebHook')
-    AUTHENTICATION_BACKENDS = [
-        'social_core.backends.github.GithubAppAuth',
-        ...
-    ]
+    SOCIAL_AUTH_GITHUB_APP_KEY = 'xxxxxx'
+    SOCIAL_AUTH_GITHUB_APP_SECRET = 'yyy'
+    KIWI_GITHUB_APP_SECRET = b'your-webhook-secret'
 
 everything else will be taken care for by Kiwi TCMS plugin loading code!
 
