@@ -76,7 +76,7 @@ class ApplicationEdit(View):
         return HttpResponseRedirect('/')
 
 
-class WebHook(View):
+class WebHook(View):  # pylint: disable=missing-permission-required
     """
         Handles `marketplace_purchase` web hook as described at:
         https://developer.github.com/marketplace/listing-on-github-marketplace/configuring-the-github-marketplace-webhook/

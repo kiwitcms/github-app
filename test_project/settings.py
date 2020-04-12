@@ -3,6 +3,7 @@
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 #
 # pylint: disable=invalid-name,protected-access,wrong-import-position
+# pylint: disable=wildcard-import, unused-wildcard-import
 
 import os
 import sys
@@ -48,7 +49,7 @@ TEMPLATE_DEBUG = True
 SECRET_KEY = '7d09f358-6609-11e9-8140-34363b8604e2'
 
 
-DATABASES['default'].update({
+DATABASES['default'].update({  # pylint: disable=objects-update-used
     'NAME': 'test_project',
     'USER': 'kiwi',
     'PASSWORD': 'kiwi',
