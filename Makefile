@@ -11,12 +11,18 @@ flake8:
 # ignore "line too long"
 	@flake8 --exclude=$(FLAKE8_EXCLUDE) --ignore=E501 tcms_github_app/
 
+KIWI_LINT_INCLUDE_PATH="../Kiwi/"
+
 .PHONY: pylint
 pylint:
-	pylint --load-plugins=pylint_django \
-	        -d missing-docstring -d duplicate-code \
-	        -d wildcard-import -d unused-wildcard-import \
-	        *.py tcms_github_app/ test_project/
+	if [ ! -d "$(KIWI_LINT_INCLUDE_PATH)/kiwi_lint" ]; then \
+	    git clone --depth 1 https://github.com/kiwitcms/Kiwi.git $(KIWI_LINT_INCLUDE_PATH); \
+	fi
+
+	PYTHONPATH=$(KIWI_LINT_INCLUDE_PATH) DJANGO_SETTINGS_MODULE="test_project.settings" \
+	pylint --load-plugins=pylint_django --load-plugins=kiwi_lint \
+	        -d missing-docstring -d duplicate-code -d module-in-directory-without-init \
+	        *.py tcms_github_app/ test_project/ tcms_settings_dir/
 
 .PHONY: test_for_missing_migrations
 test_for_missing_migrations:
