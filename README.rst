@@ -59,6 +59,10 @@ Installation
 
 inside Kiwi TCMS's docker image and make sure the following settings are configured::
 
+    AUTHENTICATION_BACKENDS = [
+        'social_core.backends.github.GithubAppAuth',
+        ...
+    ]
     SOCIAL_AUTH_GITHUB_APP_KEY = 'xxxxxx'
     SOCIAL_AUTH_GITHUB_APP_SECRET = 'yyy'
     KIWI_GITHUB_APP_SECRET = b'your-webhook-secret'
@@ -99,6 +103,16 @@ Then configure how the application interacts with GitHub:
 
 Changelog
 ---------
+
+v1.0 (13 Apr 2020)
+~~~~~~~~~~~~~~~~~~
+
+- Install settings overrides under ``tcms_settings_dir/``
+  (compatible with Kiwi TCMS v8.2 or later):
+
+  - does not need ``MIDDLEWARE`` and ``PUBLIC_VIEWS`` override anymore
+- Remove ``GithubAppAuth`` backend, shipped with social-auth-core v3.3.0
+- Fix a redirect to use the correct name of our social_core backend
 
 
 v0.0.5 (19 Feb 2020)
