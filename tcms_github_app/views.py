@@ -29,7 +29,7 @@ class ApplicationEdit(View):
     def get(self, request, *args, **kwargs):
         social_user = request.user.social_auth.first()
         if not social_user:
-            github_url = reverse('social:begin', args=['github'])
+            github_url = reverse('social:begin', args=['github-app'])
             messages.add_message(
                 request,
                 messages.WARNING,
