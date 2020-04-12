@@ -21,10 +21,18 @@ from tcms_github_app.models import WebhookPayload
 from tcms_github_app import utils
 
 
-class ApplicationEdit(View):
+class ApplicationEdit(View):  # pylint: disable=missing-permission-required
     """
         If there is an App installation made on GitHub by the current user
         then allow them to edit it.
+
+        .. note::
+
+            This view only redirects either to the appropriate admin page
+            for editing or to "/" with an appropriate message indicating what's
+            wrong. Permission checks are actually performed in
+            ``AppInstallationAdmin.has_change_permission()`` so we don't need
+            a ``@permission_required`` decorator here!
     """
     def get(self, request, *args, **kwargs):
         social_user = request.user.social_auth.first()
