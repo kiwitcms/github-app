@@ -71,43 +71,57 @@ class AppInstallationAdminTestCase(LoggedInTestCase):
                             html=True)
 
     def test_changelist_unauthorized_for_regular_user(self):
-        response = self.client.get(
-            reverse('admin:tcms_github_app_appinstallation_changelist'))
-        self.assertIsInstance(response, HttpResponseForbidden)
+        with self.modify_settings(MIDDLEWARE={
+                'remove': 'tcms_github_app.middleware.CheckGitHubAppMiddleware',
+        }):
+            response = self.client.get(
+                reverse('admin:tcms_github_app_appinstallation_changelist'))
+            self.assertIsInstance(response, HttpResponseForbidden)
 
     def test_changelist_authorized_for_superuser(self):
         self.tester.is_superuser = True
         self.tester.save()
 
-        response = self.client.get(
-            reverse('admin:tcms_github_app_appinstallation_changelist'))
-        self.assertContains(response, 'App installations')
+        with self.modify_settings(MIDDLEWARE={
+                'remove': 'tcms_github_app.middleware.CheckGitHubAppMiddleware',
+        }):
+            response = self.client.get(
+                reverse('admin:tcms_github_app_appinstallation_changelist'))
+            self.assertContains(response, 'App installations')
 
     def test_add_unauthorized_for_superuser(self):
         self.tester.is_superuser = True
         self.tester.save()
 
-        response = self.client.get(
-            reverse('admin:tcms_github_app_appinstallation_add'))
-        self.assertIsInstance(response, HttpResponseForbidden)
+        with self.modify_settings(MIDDLEWARE={
+                'remove': 'tcms_github_app.middleware.CheckGitHubAppMiddleware',
+        }):
+            response = self.client.get(reverse(
+                'admin:tcms_github_app_appinstallation_add'))
+            self.assertIsInstance(response, HttpResponseForbidden)
 
     def test_delete_unauthorized_for_superuser(self):
         self.tester.is_superuser = True
         self.tester.save()
 
-        response = self.client.get(
-            reverse('admin:tcms_github_app_appinstallation_delete', args=[self.app_inst.pk]))
-        self.assertIsInstance(response, HttpResponseForbidden)
+        with self.modify_settings(MIDDLEWARE={
+                'remove': 'tcms_github_app.middleware.CheckGitHubAppMiddleware',
+        }):
+            response = self.client.get(
+                reverse('admin:tcms_github_app_appinstallation_delete', args=[self.app_inst.pk]))
+            self.assertIsInstance(response, HttpResponseForbidden)
 
     def test_change_authorized_for_superuser(self):
         self.tester.is_superuser = True
         self.tester.save()
 
-        response = self.client.get(
-            reverse('admin:tcms_github_app_appinstallation_change', args=[self.app_inst.pk]))
-        self.assert_fields(response, self.app_inst)
-        self.assertNotContains(response,
-                               '>[test] </option>')
+        with self.modify_settings(MIDDLEWARE={
+                'remove': 'tcms_github_app.middleware.CheckGitHubAppMiddleware',
+        }):
+            response = self.client.get(
+                reverse('admin:tcms_github_app_appinstallation_change', args=[self.app_inst.pk]))
+            self.assert_fields(response, self.app_inst)
+            self.assertNotContains(response, '>[test] </option>')
 
     def test_change_authorized_for_owner(self):
         response = self.client.get(
@@ -117,9 +131,12 @@ class AppInstallationAdminTestCase(LoggedInTestCase):
                             '>[test] </option>')
 
     def test_change_unauthorized_for_non_owner(self):
-        response = self.client.get(
-            reverse('admin:tcms_github_app_appinstallation_change', args=[self.app_inst.pk]))
-        self.assertIsInstance(response, HttpResponseForbidden)
+        with self.modify_settings(MIDDLEWARE={
+                'remove': 'tcms_github_app.middleware.CheckGitHubAppMiddleware',
+        }):
+            response = self.client.get(
+                reverse('admin:tcms_github_app_appinstallation_change', args=[self.app_inst.pk]))
+            self.assertIsInstance(response, HttpResponseForbidden)
 
     def test_save_by_owner_updates_installation(self):
         self.assertIsNone(self.app_inst_tester.tenant_pk)
