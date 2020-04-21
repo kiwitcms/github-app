@@ -31,3 +31,9 @@ test_for_missing_migrations:
 
 .PHONY: check
 check: flake8 pylint test_for_missing_migrations test
+
+
+.PHONY: messages
+messages:
+	./manage.py makemessages --locale en --no-obsolete --no-vinaigrette --ignore "test*.py"
+	ls tcms_github_app/locale/*/LC_MESSAGES/*.po | xargs -n 1 -I @ msgattrib -o @ --no-fuzzy @
