@@ -7,8 +7,75 @@ import github
 from django.conf import settings
 from django.core.cache import cache
 
+from social_django.models import UserSocialAuth
 from tcms.issuetracker.types import GitHub
 from tcms_github_app.models import AppInstallation
+
+
+class GithubKiwiTCMSBot(github.Github):
+    """
+        A GitHub API class which will use credentials for
+        @kiwitcms-bot on public repositories and the provided
+        application token on private ones!
+    """
+    bot_requester = None
+
+    def __init__(  # pylint: disable=too-many-arguments
+            self,
+            login_or_token=None,
+            password=None,
+            jwt=None,
+            base_url=github.MainClass.DEFAULT_BASE_URL,
+            timeout=github.MainClass.DEFAULT_TIMEOUT,
+            client_id=None,
+            client_secret=None,
+            user_agent="PyGithub/Python",
+            per_page=github.MainClass.DEFAULT_PER_PAGE,
+            verify=True,
+            retry=None,
+    ):
+        super().__init__(
+            login_or_token,
+            password,
+            jwt,
+            base_url,
+            timeout,
+            client_id,
+            client_secret,
+            user_agent,
+            per_page,
+            verify,
+            retry,
+        )
+
+        social_user = UserSocialAuth.objects.filter(user__username='kiwitcms-bot').first()
+        if social_user:
+            self.bot_requester = github.Requester.Requester(
+                social_user.extra_data['access_token'],
+                password,
+                jwt,
+                base_url,
+                timeout,
+                client_id,
+                client_secret,
+                user_agent,
+                per_page,
+                verify,
+                retry,
+            )
+
+    def get_repo(self, full_name_or_id, lazy=False):
+        """
+            In case of a public repository swap the credentials with
+            @kiwitcms-bot not the GitHub App token
+        """
+        repo = super().get_repo(full_name_or_id, lazy)
+
+        # only change on public repos and if token is defined
+        if (not repo.private) and self.bot_requester:
+            repo._requester = self.bot_requester  # pylint: disable=protected-access
+
+        return repo
 
 
 class Integration(GitHub):
@@ -64,7 +131,7 @@ class Integration(GitHub):
                                           settings.KIWI_GITHUB_APP_PRIVATE_KEY)
 
         token = self._find_token(gh_app, installation)
-        return github.Github(token)
+        return GithubKiwiTCMSBot(token)
 
     def is_adding_testcase_to_issue_disabled(self):
         """
