@@ -66,6 +66,10 @@ inside Kiwi TCMS's docker image and make sure the following settings are configu
     SOCIAL_AUTH_GITHUB_APP_KEY = 'xxxxxx'
     SOCIAL_AUTH_GITHUB_APP_SECRET = 'yyy'
     KIWI_GITHUB_APP_SECRET = b'your-webhook-secret'
+    KIWI_GITHUB_APP_ID = 123456
+    KIWI_GITHUB_APP_PRIVATE_KEY = """-----BEGIN RSA PRIVATE KEY-----
+    +++++++++base64-encoded-private-key+++++++
+    -----END RSA PRIVATE KEY-----"""
 
 everything else will be taken care for by Kiwi TCMS plugin loading code!
 
