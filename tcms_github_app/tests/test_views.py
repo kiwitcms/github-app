@@ -152,13 +152,14 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
             tenant_pk=self.tenant.pk,
         )
 
+        # NOTE: testing with private repository b/c these are still added as products
         payload = """
 {
   "action": "created",
   "repository": {
     "id": 225221463,
     "full_name": "kiwitcms-bot/test",
-    "private": false,
+    "private": true,
     "owner": {
     },
     "html_url": "https://github.com/kiwitcms-bot/test",
