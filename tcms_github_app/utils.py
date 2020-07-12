@@ -1,4 +1,4 @@
-# Copyright (c) 2019 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2020 Alexander Todorov <atodorov@MrSenko.com>
 #
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 #
@@ -10,6 +10,7 @@ from social_django.models import UserSocialAuth
 from tcms.management.models import Classification
 from tcms.management.models import Product
 from tcms.management.models import Version
+from tcms.testcases.models import BugSystem
 
 from tcms_tenants.models import Tenant
 from tcms_github_app.models import AppInstallation
@@ -72,6 +73,20 @@ def _product_from_repo(repo_data):
     )
 
 
+def _bugtracker_from_repo(repo_data):
+    # skip forks
+    if repo_data.get('fork', False):
+        return None
+
+    name = repo_data['full_name']
+    bug_system, _created = BugSystem.objects.get_or_create(
+        name='GitHub Issues for %s' % name,
+        tracker_type='tcms_github_app.issues.Integration',
+        base_url=repo_data['html_url'],
+    )
+    return bug_system
+
+
 def create_product_from_repository(data):
     tenant = find_tenant(data)
 
@@ -81,6 +96,7 @@ def create_product_from_repository(data):
 
     with tenant_context(tenant):
         _product_from_repo(data.payload['repository'])
+        _bugtracker_from_repo(data.payload['repository'])
 
 
 def create_installation(data):
