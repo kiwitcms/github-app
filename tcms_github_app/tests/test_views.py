@@ -20,6 +20,7 @@ from social_django.models import UserSocialAuth
 from tcms.utils import github
 from tcms.management.models import Product
 from tcms.management.models import Version
+from tcms.testcases.models import BugSystem
 
 from tcms_tenants.tests import LoggedInTestCase
 from tcms_tenants.tests import UserFactory
@@ -140,10 +141,12 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
             user=UserFactory(username='kiwitcms-bot')
         )
 
-    def test_installation_configured_then_creates_new_product(self):
+    def test_installation_configured_then_creates_new_product_and_bugsystem(self):
         for schema_name in ['public', self.tenant.schema_name]:
             with schema_context(schema_name):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(name='GitHub Issues for kiwitcms-bot/test').exists())
 
         # simulate already configured installation owned by the same user
         # who owns the GitHub repository
@@ -194,10 +197,16 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
             new_product = Product.objects.get(name='kiwitcms-bot/test')
             self.assertEqual(new_product.description, 'A test repository')
 
+            new_bugsystem = BugSystem.objects.get(name='GitHub Issues for kiwitcms-bot/test')
+            self.assertEqual(new_bugsystem.tracker_type, 'tcms_github_app.issues.Integration')
+            self.assertEqual(new_bugsystem.base_url, 'https://github.com/kiwitcms-bot/test')
+
     def test_installation_configured_then_skip_forks(self):
         for schema_name in ['public', self.tenant.schema_name]:
             with schema_context(schema_name):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/fork').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(name='GitHub Issues for kiwitcms-bot/test').exists())
 
         # simulate already configured installation owned by the same user
         # who owns the GitHub repository
@@ -247,11 +256,15 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
         for schema_name in ['public', self.tenant.schema_name]:
             with schema_context(schema_name):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/fork').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(name='GitHub Issues for kiwitcms-bot/test').exists())
 
     def test_installation_unconfigured_then_nothing(self):
         for schema_name in ['public', self.tenant.schema_name]:
             with schema_context(schema_name):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(name='GitHub Issues for kiwitcms-bot/test').exists())
 
         # simulate unconfigured installation owned by the same user
         # who owns the GitHub repository
@@ -300,6 +313,8 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
         for schema_name in ['public', self.tenant.schema_name]:
             with schema_context(schema_name):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(name='GitHub Issues for kiwitcms-bot/test').exists())
 
 
 class HandleInstallationCreatedTestCase(AnonymousTestCase):
