@@ -132,6 +132,7 @@ def create_installation(data):
         with tenant_context(tenant):
             for repository in data.payload['repositories']:
                 _product_from_repo(repository)
+                _bugtracker_from_repo(repository)
 
 
 def create_version_from_tag(data):
