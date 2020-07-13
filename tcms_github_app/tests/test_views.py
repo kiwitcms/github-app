@@ -378,6 +378,7 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
         for tenant in [self.public_tenant, self.private_tenant, self.tenant]:
             with tenant_context(tenant):
                 Product.objects.all().delete()
+                BugSystem.objects.all().delete()
 
     def test_sender_not_in_db(self):
         with schema_context('public'):
@@ -447,6 +448,12 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
             with tenant_context(tenant):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(
+                        name='GitHub Issues for kiwitcms-bot/example').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(
+                        name='GitHub Issues for kiwitcms-bot/test').exists())
 
         payload = """
 {
@@ -507,12 +514,24 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
         with schema_context('public'):
             self.assertTrue(Product.objects.filter(name='kiwitcms-bot/example').exists())
             self.assertTrue(Product.objects.filter(name='kiwitcms-bot/test').exists())
+            self.assertTrue(
+                BugSystem.objects.filter(
+                    name='GitHub Issues for kiwitcms-bot/example').exists())
+            self.assertTrue(
+                BugSystem.objects.filter(
+                    name='GitHub Issues for kiwitcms-bot/test').exists())
 
         # and not on other tenants
         for tenant in [self.tenant, self.private_tenant]:
             with tenant_context(tenant):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(
+                        name='GitHub Issues for kiwitcms-bot/example').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(
+                        name='GitHub Issues for kiwitcms-bot/test').exists())
 
     def test_sender_only_has_access_to_private_tenant(self):
         with schema_context('public'):
@@ -524,6 +543,12 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
             with tenant_context(tenant):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(
+                        name='GitHub Issues for kiwitcms-bot/example').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(
+                        name='GitHub Issues for kiwitcms-bot/test').exists())
 
         payload = """
 {
@@ -585,10 +610,22 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
             with tenant_context(tenant):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(
+                        name='GitHub Issues for kiwitcms-bot/example').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(
+                        name='GitHub Issues for kiwitcms-bot/test').exists())
 
         with tenant_context(self.private_tenant):
             self.assertTrue(Product.objects.filter(name='kiwitcms-bot/example').exists())
             self.assertTrue(Product.objects.filter(name='kiwitcms-bot/test').exists())
+            self.assertTrue(
+                BugSystem.objects.filter(
+                    name='GitHub Issues for kiwitcms-bot/example').exists())
+            self.assertTrue(
+                BugSystem.objects.filter(
+                    name='GitHub Issues for kiwitcms-bot/test').exists())
 
     def test_sender_has_access_to_multiple_tenants(self):
         with schema_context('public'):
@@ -600,6 +637,12 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
             with tenant_context(tenant):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(
+                        name='GitHub Issues for kiwitcms-bot/example').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(
+                        name='GitHub Issues for kiwitcms-bot/test').exists())
 
         payload = """
 {
@@ -661,6 +704,12 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
             with tenant_context(tenant):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/example').exists())
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(
+                        name='GitHub Issues for kiwitcms-bot/example').exists())
+                self.assertFalse(
+                    BugSystem.objects.filter(
+                        name='GitHub Issues for kiwitcms-bot/test').exists())
 
 
 class ApplicationEditTestCase(LoggedInTestCase):
