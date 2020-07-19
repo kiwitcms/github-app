@@ -5,10 +5,10 @@
 
 import github
 from django.conf import settings
-from django.core.cache import cache
 
 from social_django.models import UserSocialAuth
 from tcms.issuetracker.types import GitHub
+from tcms_github_app import utils
 from tcms_github_app.models import AppInstallation
 
 
@@ -92,25 +92,6 @@ class Integration(GitHub):
 
             The ``api_password`` field is determined at runtime!
     """
-    @staticmethod
-    def _find_token(gh_app, installation):
-        """
-            Find an installation access token for this app:
-            https://docs.github.com/en/rest/reference/apps#create-an-installation-access-token-for-an-app
-
-            and cache it for 50 mins!
-        """
-        cache_key = "token-for-%d" % installation.installation
-
-        token = cache.get(cache_key)
-        if not token:
-            token = gh_app.get_access_token(installation.installation)
-            token = token.token
-            # token expires after 1 hr so cache it for 50 mins
-            cache.set(cache_key, token, 3000)
-
-        return token
-
     def _rpc_connection(self):
         # find AppInstallation on the current tenant
         installations = AppInstallation.objects.filter(tenant_pk=self.request.tenant.pk)
@@ -130,7 +111,7 @@ class Integration(GitHub):
         gh_app = github.GithubIntegration(settings.KIWI_GITHUB_APP_ID,
                                           settings.KIWI_GITHUB_APP_PRIVATE_KEY)
 
-        token = self._find_token(gh_app, installation)
+        token = utils.find_token_from_app_inst(gh_app, installation)
         return GithubKiwiTCMSBot(token)
 
     def is_adding_testcase_to_issue_disabled(self):
