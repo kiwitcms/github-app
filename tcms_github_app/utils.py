@@ -3,9 +3,10 @@
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 #
 
+from django.core.cache import cache
+
 from django_tenants.utils import tenant_context
 from social_django.models import UserSocialAuth
-
 
 from tcms.management.models import Classification
 from tcms.management.models import Product
@@ -151,3 +152,22 @@ def create_version_from_tag(data):
             value=data.payload['ref'],
             product=product
         )
+
+
+def find_token_from_app_inst(gh_app, installation):
+    """
+        Find an installation access token for this app:
+        https://docs.github.com/en/rest/reference/apps#create-an-installation-access-token-for-an-app
+
+        and cache it for 50 mins!
+    """
+    cache_key = "token-for-%d" % installation.installation
+
+    token = cache.get(cache_key)
+    if not token:
+        token = gh_app.get_access_token(installation.installation)
+        token = token.token
+        # token expires after 1 hr so cache it for 50 mins
+        cache.set(cache_key, token, 3000)
+
+    return token
