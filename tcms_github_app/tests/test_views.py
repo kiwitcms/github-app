@@ -1,10 +1,11 @@
-# Copyright (c) 2019 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2020 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
-# pylint: disable=too-many-ancestors
+# pylint: disable=too-many-ancestors, too-many-lines
 
 import json
 from http import HTTPStatus
+import unittest.mock
 
 from django.urls import reverse
 from django.conf import settings
@@ -141,7 +142,16 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
             user=UserFactory(username='kiwitcms-bot')
         )
 
-    def test_installation_configured_then_creates_new_product_and_bugsystem(self):
+    @unittest.mock.patch('tcms_github_app.utils.github_rpc_from_inst')
+    def test_installation_configured_then_creates_new_product_and_bugsystem(self, github_rpc):
+        test_repo = unittest.mock.MagicMock()
+        test_repo.fork = False
+        test_repo.full_name = 'kiwitcms-bot/test'
+        test_repo.description = 'A test repository'
+        test_repo.html_url = 'https://github.com/%s' % test_repo.full_name
+
+        github_rpc.return_value.get_repo = unittest.mock.MagicMock(side_effect=[test_repo])
+
         for schema_name in ['public', self.tenant.schema_name]:
             with schema_context(schema_name):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/test').exists())
@@ -201,7 +211,13 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
             self.assertEqual(new_bugsystem.tracker_type, 'tcms_github_app.issues.Integration')
             self.assertEqual(new_bugsystem.base_url, 'https://github.com/kiwitcms-bot/test')
 
-    def test_installation_configured_then_skip_forks(self):
+    @unittest.mock.patch('tcms_github_app.utils.github_rpc_from_inst')
+    def test_installation_configured_then_skip_forks(self, github_rpc):
+        fork_repo = unittest.mock.MagicMock()
+        fork_repo.fork = True
+
+        github_rpc.return_value.get_repo = unittest.mock.MagicMock(side_effect=[fork_repo])
+
         for schema_name in ['public', self.tenant.schema_name]:
             with schema_context(schema_name):
                 self.assertFalse(Product.objects.filter(name='kiwitcms-bot/fork').exists())
@@ -442,7 +458,23 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
                                                sender=99999999,
                                                tenant_pk=None).exists())
 
-    def test_sender_only_has_access_to_public(self):
+    @unittest.mock.patch('tcms_github_app.utils.github_rpc_from_inst')
+    def test_sender_only_has_access_to_public(self, github_rpc):
+        example_repo = unittest.mock.MagicMock()
+        example_repo.fork = False
+        example_repo.full_name = 'kiwitcms-bot/example'
+        example_repo.description = 'Example description'
+        example_repo.html_url = 'https://github.com/%s' % example_repo.full_name
+
+        test_repo = unittest.mock.MagicMock()
+        test_repo.fork = False
+        test_repo.full_name = 'kiwitcms-bot/test'
+        test_repo.description = 'Test description'
+        test_repo.html_url = 'https://github.com/%s' % test_repo.full_name
+
+        github_rpc.return_value.get_repo = unittest.mock.MagicMock(
+            side_effect=[example_repo, test_repo])
+
         # assert products don't exist initially
         for tenant in [self.public_tenant, self.tenant, self.private_tenant]:
             with tenant_context(tenant):
@@ -533,7 +565,23 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
                     BugSystem.objects.filter(
                         name='GitHub Issues for kiwitcms-bot/test').exists())
 
-    def test_sender_only_has_access_to_private_tenant(self):
+    @unittest.mock.patch('tcms_github_app.utils.github_rpc_from_inst')
+    def test_sender_only_has_access_to_private_tenant(self, github_rpc):
+        example_repo = unittest.mock.MagicMock()
+        example_repo.fork = False
+        example_repo.full_name = 'kiwitcms-bot/example'
+        example_repo.description = 'Example description'
+        example_repo.html_url = 'https://github.com/%s' % example_repo.full_name
+
+        test_repo = unittest.mock.MagicMock()
+        test_repo.fork = False
+        test_repo.full_name = 'kiwitcms-bot/test'
+        test_repo.description = 'Test description'
+        test_repo.html_url = 'https://github.com/%s' % test_repo.full_name
+
+        github_rpc.return_value.get_repo = unittest.mock.MagicMock(
+            side_effect=[example_repo, test_repo])
+
         with schema_context('public'):
             # make sure social_user can access private_tenant
             self.private_tenant.authorized_users.add(self.social_user.user)
@@ -768,7 +816,16 @@ class HandleTagCreatedTestCase(AnonymousTestCase):
         cls.url = reverse('github_app_webhook')
         cls.social_user = UserSocialAuthFactory()
 
-    def test_installation_configured_then_creates_new_version(self):
+    @unittest.mock.patch('tcms_github_app.utils.github_rpc_from_inst')
+    def test_installation_configured_then_creates_new_version(self, github_rpc):
+        example_repo = unittest.mock.MagicMock()
+        example_repo.fork = False
+        example_repo.full_name = 'kiwitcms-bot/example'
+        example_repo.description = 'Example description'
+        example_repo.html_url = 'https://github.com/%s' % example_repo.full_name
+
+        github_rpc.return_value.get_repo = unittest.mock.MagicMock(side_effect=[example_repo])
+
         for schema_name in ['public', self.tenant.schema_name]:
             with schema_context(schema_name):
                 self.assertFalse(Version.objects.filter(value='v2.0').exists())
@@ -827,7 +884,13 @@ class HandleTagCreatedTestCase(AnonymousTestCase):
         with tenant_context(self.tenant):
             self.assertTrue(Version.objects.filter(value='v2.0').exists())
 
-    def test_installation_configured_then_skip_forks(self):
+    @unittest.mock.patch('tcms_github_app.utils.github_rpc_from_inst')
+    def test_installation_configured_then_skip_forks(self, github_rpc):
+        example_repo = unittest.mock.MagicMock()
+        example_repo.fork = True
+
+        github_rpc.return_value.get_repo = unittest.mock.MagicMock(side_effect=[example_repo])
+
         for schema_name in ['public', self.tenant.schema_name]:
             with schema_context(schema_name):
                 self.assertFalse(Version.objects.filter(value='v2.0').exists())
