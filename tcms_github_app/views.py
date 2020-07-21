@@ -95,6 +95,8 @@ class WebHook(View):  # pylint: disable=missing-permission-required
     def handle_payload(payload):
         if payload.event == "repository" and payload.action == "created":
             utils.create_product_from_repository(payload)
+        elif payload.event == "installation_repositories":
+            utils.create_product_from_installation_repositories(payload)
         elif payload.event == "installation" and payload.action == "created":
             utils.create_installation(payload)
         elif payload.event == "create" and payload.payload.get('ref_type') == "tag":
