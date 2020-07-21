@@ -29,6 +29,20 @@ class UserSocialAuthFactory(DjangoModelFactory):
     uid = factory.Sequence(lambda n: n)
 
 
+class ClassificationFactory(DjangoModelFactory):
+    class Meta:
+        model = 'management.Classification'
+    name = factory.Sequence(lambda n: 'Classification %d' % n)
+
+
+class ProductFactory(DjangoModelFactory):
+    class Meta:
+        model = 'management.Product'
+
+    name = factory.Sequence(lambda n: 'Product %d' % n)
+    classification = factory.SubFactory(ClassificationFactory)
+
+
 class AnonymousTestCase(LoggedInTestCase):
     def setUp(self):
         super().setUp()
