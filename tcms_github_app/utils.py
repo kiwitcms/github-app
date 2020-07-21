@@ -142,6 +142,25 @@ def create_product_from_repository(data):
         _bugtracker_from_repo(repo_object)
 
 
+def create_product_from_installation_repositories(data):
+    """
+        Warning: not handling `repositories_removed` for now b/c
+        there could be linked data which we don't want to destroy!
+    """
+    tenant, installation = find_tenant(data)
+
+    # can't handle requests from unconfigured installation
+    if not tenant:
+        return
+
+    with tenant_context(tenant):
+        rpc = github_rpc_from_inst(installation)
+        for repo in data.payload['repositories_added']:
+            repo_object = rpc.get_repo(repo['full_name'])
+            _product_from_repo(repo_object)
+            _bugtracker_from_repo(repo_object)
+
+
 def create_installation(data):
     """
         Records an AppInstallation object which will be used to
