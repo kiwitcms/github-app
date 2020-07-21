@@ -59,4 +59,6 @@ class FindTenantTestCase(AnonymousTestCase):
             payload=json.loads(payload),
         )
 
-        self.assertIsNone(utils.find_tenant(wh_payload))
+        tenant, app_inst = utils.find_tenant(wh_payload)
+        self.assertIsNone(tenant)
+        self.assertIsNone(app_inst)
