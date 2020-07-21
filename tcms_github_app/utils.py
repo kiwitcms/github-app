@@ -71,7 +71,7 @@ def find_tenant(data):
     ).first()
 
     if not app_inst:
-        return None
+        return None, None
 
     tenant = Tenant.objects.filter(pk=app_inst.tenant_pk).first()
 
