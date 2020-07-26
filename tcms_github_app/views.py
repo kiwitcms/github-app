@@ -84,6 +84,48 @@ class ApplicationEdit(View):  # pylint: disable=missing-permission-required
         return HttpResponseRedirect('/')
 
 
+class Resync(View):  # pylint: disable=missing-permission-required
+    """
+        Trigger manual resync between GitHub and Kiwi TCMS.
+        Anyone who can access the current tenant/app can perform this!
+    """
+    def get(self, request, *args, **kwargs):
+        installations = utils.find_installations(request)
+
+        if installations.count() == 0:
+            github_url = 'https://github.com/apps/kiwi-tcms'
+            messages.add_message(
+                request,
+                messages.WARNING,
+                _(
+                    'You have not installed Kiwi TCMS into your GitHub account! '
+                    '<a href="%s">Click here</a>!' % github_url),
+            )
+            return HttpResponseRedirect('/')
+
+        if installations.count() > 1:
+            # multiple apps
+            messages.add_message(
+                request,
+                messages.WARNING,
+                _('Multiple GitHub App installations detected!'),
+            )
+            return HttpResponseRedirect('/')
+
+        installation = installations.first()
+        if not installation.tenant_pk:
+            messages.add_message(
+                request,
+                messages.WARNING,
+                _('Unconfigured GitHub App %d') % installation.installation,
+            )
+            return HttpResponseRedirect('/')
+
+        # finally start syncing
+        utils.resync(installation)
+        return HttpResponseRedirect('/')
+
+
 class WebHook(View):  # pylint: disable=missing-permission-required
     """
         Handles `marketplace_purchase` web hook as described at:

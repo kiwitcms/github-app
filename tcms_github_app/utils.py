@@ -244,3 +244,15 @@ def create_version_from_tag(data):
             value=data.payload['ref'],
             product=product
         )
+
+
+def resync(app_inst):
+    """
+        Used when manually trigerring a resync. ATM only Product & BugSystem
+        records are synced. Existing tags/Versions aren't added!
+    """
+    gh_inst = github_installation_from_inst(app_inst)
+
+    for repo_object in gh_inst.get_repos():
+        _product_from_repo(repo_object)
+        _bugtracker_from_repo(repo_object)
