@@ -149,6 +149,7 @@ class AppInstallationAdminTestCase(LoggedInTestCase):
             follow=True,
         )
 
+        self.assertRedirects(response, '/')
         self.assertContains(response, 'The app installation')
         self.assertContains(response, self.app_inst_tester)
         self.assertContains(response, 'was changed successfully.')
