@@ -1,4 +1,4 @@
-# Copyright (c) 2019 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2020 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -6,8 +6,9 @@ from django import forms
 from django.contrib import admin
 from django.db.models import Q
 from django.forms.utils import ErrorList
-from django.utils.translation import gettext_lazy as _
 from django.http import HttpResponseForbidden
+from django.http import HttpResponseRedirect
+from django.utils.translation import gettext_lazy as _
 
 from django_tenants.utils import get_tenant_model
 from social_django.models import UserSocialAuth
@@ -140,6 +141,13 @@ class AppInstallationAdmin(admin.ModelAdmin):
             return super().changelist_view(request, extra_context)
 
         return HttpResponseForbidden()
+
+    def response_change(self, request, obj):
+        response = super().response_change(request, obj)
+        if admin.options.IS_POPUP_VAR in request.POST:
+            return response
+
+        return HttpResponseRedirect('/')
 
 
 admin.site.register(WebhookPayload, WebhookPayloadAdmin)
