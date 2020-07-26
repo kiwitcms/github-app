@@ -46,6 +46,15 @@ def github_rpc_from_inst(installation):
     return github.Github(token)
 
 
+def github_installation_from_inst(app_inst):
+    """
+        Return a github.Installation.Installation object
+        which holds information about all repositories we have access to!
+    """
+    rpc = github_rpc_from_inst(app_inst)
+    return rpc.get_installation(app_inst.installation)
+
+
 def find_user_from_sender(sender_id):
     """
         Returns a User object from the DB which matches the person who
