@@ -8,6 +8,7 @@ from django.conf import settings
 
 from social_django.models import UserSocialAuth
 from tcms.issuetracker.types import GitHub
+
 from tcms_github_app import utils
 
 
