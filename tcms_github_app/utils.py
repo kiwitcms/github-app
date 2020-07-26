@@ -78,6 +78,23 @@ def find_tenant(data):
     return tenant, app_inst
 
 
+def find_installations(request):
+    """
+        Find App installation for the current tenant + user
+    """
+    # find AppInstallation on the current tenant
+    installations = AppInstallation.objects.filter(tenant_pk=request.tenant.pk)
+
+    # if there are more than 1 (usually on public) then try to find the installation
+    # performed by the current user, e.g. on their own account
+    if installations.count() > 1:
+        social_user = request.user.social_auth.first()
+        if social_user:
+            installations = installations.filter(sender=social_user.uid)
+
+    return installations
+
+
 def _product_from_repo(repo_object):
     """
         repo_object is a github.Repository.Repository object

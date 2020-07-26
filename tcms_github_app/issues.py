@@ -9,7 +9,6 @@ from django.conf import settings
 from social_django.models import UserSocialAuth
 from tcms.issuetracker.types import GitHub
 from tcms_github_app import utils
-from tcms_github_app.models import AppInstallation
 
 
 class GithubKiwiTCMSBot(github.Github):
@@ -93,15 +92,7 @@ class Integration(GitHub):
             The ``api_password`` field is determined at runtime!
     """
     def _rpc_connection(self):
-        # find AppInstallation on the current tenant
-        installations = AppInstallation.objects.filter(tenant_pk=self.request.tenant.pk)
-
-        # if there are more than 1 (usually on public) then try to find the installation
-        # performed by the current user, e.g. on their own account
-        if installations.count() > 1:
-            social_user = self.request.user.social_auth.first()
-            if social_user:
-                installations = installations.filter(sender=social_user.uid)
+        installations = utils.find_installations(self.request)
 
         if installations.count() != 1:
             raise Exception('Cannot find GitHub App installation')
