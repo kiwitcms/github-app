@@ -19,6 +19,11 @@ from tcms_tenants.models import Tenant
 from tcms_github_app.models import AppInstallation
 
 
+RECORD_SKIPPED = 0
+RECORD_EXISTS = 10
+RECORD_CREATED = 20
+
+
 def find_token_from_app_inst(gh_app, installation):
     """
         Find an installation access token for this app:
@@ -107,10 +112,12 @@ def find_installations(request):
 def _product_from_repo(repo_object):
     """
         repo_object is a github.Repository.Repository object
+
+        Returns (Product, int). The second element indicates status.
     """
     # skip forks
     if repo_object.fork:
-        return None
+        return None, RECORD_SKIPPED
 
     name = repo_object.full_name
 
@@ -122,7 +129,7 @@ def _product_from_repo(repo_object):
     # this leads to "duplicate key value violates unique constraint" error:
     # https://sentry.io/organizations/open-technologies-bulgaria-ltd/issues/1405498335/
     if product:
-        return product
+        return product, RECORD_EXISTS
 
     description = repo_object.description
     if not description:
@@ -133,24 +140,31 @@ def _product_from_repo(repo_object):
         name=name,
         description=description,
         classification=classification,
-    )
+    ), RECORD_CREATED
 
 
 def _bugtracker_from_repo(repo_object):
     """
         repo_object is a github.Repository.Repository object
+
+        Returns (Product, int). The second element indicates status.
     """
     # skip forks
     if repo_object.fork:
-        return None
+        return None, RECORD_SKIPPED
 
     name = repo_object.full_name
-    bug_system, _created = BugSystem.objects.get_or_create(
+    bug_system, created = BugSystem.objects.get_or_create(
         name='GitHub Issues for %s' % name,
         tracker_type='tcms_github_app.issues.Integration',
         base_url=repo_object.html_url,
     )
-    return bug_system
+
+    db_status = RECORD_EXISTS
+    if created:
+        db_status = RECORD_CREATED
+
+    return bug_system, db_status
 
 
 def create_product_from_repository(data):
