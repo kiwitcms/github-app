@@ -4,7 +4,9 @@
 #
 
 from django.conf import settings
+from django.contrib import messages
 from django.core.cache import cache
+from django.utils.translation import gettext_lazy as _
 
 import github
 from django_tenants.utils import tenant_context
@@ -260,7 +262,22 @@ def create_version_from_tag(data):
         )
 
 
-def resync(app_inst):
+def resync_message(request, record, db_status):
+    """
+        Adds a response message indicating if a record was added or
+        it already existed.
+    """
+    if db_status == RECORD_CREATED:
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             _("%s was imported from GitHub") % record)
+    elif db_status == RECORD_EXISTS:
+        messages.add_message(request,
+                             messages.INFO,
+                             _("%s already exists") % record)
+
+
+def resync(request, app_inst):
     """
         Used when manually trigerring a resync. ATM only Product & BugSystem
         records are synced. Existing tags/Versions aren't added!
@@ -268,5 +285,8 @@ def resync(app_inst):
     gh_inst = github_installation_from_inst(app_inst)
 
     for repo_object in gh_inst.get_repos():
-        _product_from_repo(repo_object)
+        record, db_status = _product_from_repo(repo_object)
+        resync_message(request, record, db_status)
+
         _bugtracker_from_repo(repo_object)
+        resync_message(request, record, db_status)

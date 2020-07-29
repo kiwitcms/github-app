@@ -122,7 +122,7 @@ class Resync(View):  # pylint: disable=missing-permission-required
             return HttpResponseRedirect('/')
 
         # finally start syncing
-        utils.resync(installation)
+        utils.resync(request, installation)
         return HttpResponseRedirect('/')
 
 
