@@ -411,6 +411,7 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
       "site_admin": false
     },
     "repository_selection": "all",
+    "html_url": "https://github.com/settings/installation/5651305",
     "single_file_name": null
   },
   "repositories": [
@@ -498,6 +499,7 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
       "site_admin": false
     },
     "repository_selection": "all",
+    "html_url": "https://github.com/settings/installations/5651305",
     "single_file_name": null
   },
   "repositories": [
@@ -609,6 +611,7 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
       "site_admin": false
     },
     "repository_selection": "all",
+    "html_url": "https://github.com/settings/installations/5651305",
     "single_file_name": null
   },
   "repositories": [
@@ -703,6 +706,7 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
       "site_admin": false
     },
     "repository_selection": "all",
+    "html_url": "https://github.com/settings/installations/5651399",
     "single_file_name": null
   },
   "repositories": [
