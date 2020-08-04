@@ -230,6 +230,7 @@ def create_installation(data):
         installation=data.payload['installation']['id'],
         sender=data.sender,
         tenant_pk=tenant_pk,
+        settings_url=data.payload['installation']['html_url'],
     )
 
     if tenant and tenant_pk:
