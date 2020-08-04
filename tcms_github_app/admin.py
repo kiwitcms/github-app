@@ -13,6 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from django_tenants.utils import get_tenant_model
 from social_django.models import UserSocialAuth
 
+from tcms_github_app import utils
 from tcms_github_app.models import AppInstallation
 from tcms_github_app.models import WebhookPayload
 
@@ -148,6 +149,12 @@ class AppInstallationAdmin(admin.ModelAdmin):
             return response
 
         return HttpResponseRedirect('/')
+
+    def save_form(self, request, form, change):
+        app_inst = super().save_form(request, form, change)
+        if form.has_changed() and app_inst.tenant_pk:
+            utils.resync(request, app_inst)
+        return app_inst
 
 
 admin.site.register(WebhookPayload, WebhookPayloadAdmin)
