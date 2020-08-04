@@ -94,7 +94,7 @@ class AppInstallationChangeForm(forms.ModelForm):
 
 
 class AppInstallationAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'installation', 'sender', 'tenant_pk')
+    list_display = ('pk', 'installation', 'sender', 'tenant_pk', 'settings_url')
     ordering = ['-installation']
 
     form = AppInstallationChangeForm
@@ -113,12 +113,12 @@ class AppInstallationAdmin(admin.ModelAdmin):
         return obj.sender == int(social_user.uid)
 
     def get_readonly_fields(self, request, obj=None):
-        return ('installation', 'sender')
+        return ('installation', 'sender', 'settings_url')
 
     def get_fieldsets(self, request, obj=None):
         return [
             (None, {
-                'fields': ('tenant_pk', 'installation', 'sender'),
+                'fields': ('tenant_pk', 'installation', 'sender', 'settings_url'),
                 'description': '<h1>' + _("""For additional configuration see
 <a href="%s">GitHub</a>""") % obj.settings_url + '</h1>',
             }),
