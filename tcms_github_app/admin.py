@@ -120,7 +120,7 @@ class AppInstallationAdmin(admin.ModelAdmin):
             (None, {
                 'fields': ('tenant_pk', 'installation', 'sender'),
                 'description': '<h1>' + _("""For additional configuration see
-<a href="https://github.com/settings/installations/%d">GitHub</a>""") % obj.installation + '</h1>',
+<a href="%s">GitHub</a>""") % obj.settings_url + '</h1>',
             }),
         ]
 
