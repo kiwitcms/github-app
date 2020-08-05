@@ -109,6 +109,28 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.1 (05 Aug 2020)
+~~~~~~~~~~~~~~~~~~
+
+- Add GitHub issue-tracker integration which authenticates as the installed app.
+  Fixes `Issue #25 <https://github.com/kiwitcms/github-app/issues/25>`_
+- Configure BugSystem for new repos. Fixes
+  `Issue #15 <https://github.com/kiwitcms/github-app/issues/15>`_
+- Create Product & BugSystem records when installation_repositores change.
+  Fixes `Issue #21 <https://github.com/kiwitcms/github-app/issues/21>`_
+- Trigger resync from GitHub via menu. Fixes
+  `Issue #19 <https://github.com/kiwitcms/github-app/issues/19>`_
+- Trigger resync from GitHub after AppInstallation is configured. Fixes
+  `Issue #20 <https://github.com/kiwitcms/github-app/issues/20>`_
+- Database: Add ``AppInstallation.settings_url`` field
+- Link to the correct URL for GitHub settings. Fixes
+  `Issue #33 <https://github.com/kiwitcms/github-app/issues/33>`_
+- Require user to be logged in for ApplicationEdit. Fixes
+  `Issue #36 <https://github.com/kiwitcms/github-app/issues/36>`_
+- Update translation strings
+- Add more tests
+
+
 v1.0 (13 Apr 2020)
 ~~~~~~~~~~~~~~~~~~
 

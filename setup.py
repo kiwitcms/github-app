@@ -25,7 +25,7 @@ def get_install_requires(path):
 
 setup(
     name='kiwitcms-github-app',
-    version='1.0',
+    version='1.1',
     description='GitHub App integration for Kiwi TCMS',
     long_description=get_long_description(),
     author='Kiwi TCMS',
