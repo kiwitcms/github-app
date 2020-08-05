@@ -7,10 +7,12 @@ import json
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import View
 
@@ -21,7 +23,8 @@ from tcms_github_app.models import WebhookPayload
 from tcms_github_app import utils
 
 
-class ApplicationEdit(View):  # pylint: disable=missing-permission-required
+@method_decorator(login_required, name='dispatch')  # pylint: disable=missing-permission-required
+class ApplicationEdit(View):
     """
         If there is an App installation made on GitHub by the current user
         then allow them to edit it.
