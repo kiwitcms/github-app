@@ -42,8 +42,9 @@ Plugin behavior:
 - If unable to auto-configure display warning and redirect to configuration
   page once the GitHub account who installed this integration onto their
   GitHub repository logs into Kiwi TCMS
-- Existing & newly created repositories are added as products in Kiwi TCMS.
-  Fork repositories are skipped
+- Existing & newly created repositories are added as products in Kiwi TCMS
+- BugSystem records are automatically configured for repositories
+- Fork repositories are skipped
 - Newly created git tags are added as product versions in Kiwi TCMS
 
 
