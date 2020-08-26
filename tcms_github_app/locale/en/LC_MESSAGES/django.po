@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-05 12:40+0000\n"
+"POT-Creation-Date: 2020-08-26 22:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,7 +37,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: tcms_github_app/middleware.py:41 tcms_github_app/views.py:120
+#: tcms_github_app/middleware.py:41
 #, python-format
 msgid "Unconfigured GitHub App %d"
 msgstr ""
@@ -52,26 +52,31 @@ msgstr ""
 msgid "%s already exists"
 msgstr ""
 
-#: tcms_github_app/views.py:45
+#: tcms_github_app/views.py:48
 #, python-format
 msgid ""
 "You have not logged-in via GitHub account! <a href=\"%s\">Click here</a>!"
 msgstr ""
 
-#: tcms_github_app/views.py:59 tcms_github_app/views.py:101
+#: tcms_github_app/views.py:62
 #, python-format
 msgid ""
 "You have not installed Kiwi TCMS into your GitHub account! <a href=\"%s"
 "\">Click here</a>!"
 msgstr ""
 
-#: tcms_github_app/views.py:73
+#: tcms_github_app/views.py:76
 msgid "Multiple GitHub App installations detected! See below:"
 msgstr ""
 
-#: tcms_github_app/views.py:82
+#: tcms_github_app/views.py:85
 #, python-format
 msgid "Edit GitHub App <a href=\"%s\">%s</a>"
+msgstr ""
+
+#: tcms_github_app/views.py:102
+#, python-format
+msgid "Cannot find GitHub App installation for tenant \"%s\""
 msgstr ""
 
 #: tcms_github_app/views.py:111
