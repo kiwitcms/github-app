@@ -112,16 +112,8 @@ class Resync(View):  # pylint: disable=missing-permission-required
             )
             return HttpResponseRedirect('/')
 
+        # user .first() b/c the result is a query set
         installation = installations.first()
-        if not installation.tenant_pk:
-            messages.add_message(
-                request,
-                messages.WARNING,
-                _('Unconfigured GitHub App %d') % installation.installation,
-            )
-            return HttpResponseRedirect('/')
-
-        # finally start syncing
         utils.resync(request, installation)
         return HttpResponseRedirect('/')
 
