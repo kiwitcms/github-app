@@ -96,7 +96,8 @@ class Integration(GitHub):
         installations = utils.find_installations(self.request)
 
         if installations.count() != 1:
-            raise Exception('Cannot find GitHub App installation')
+            raise Exception(
+                'Cannot find GitHub App installation for tenant "%s"' % self.request.tenant.name)
 
         installation = installations.first()
 
