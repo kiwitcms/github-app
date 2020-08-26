@@ -96,13 +96,10 @@ class Resync(View):  # pylint: disable=missing-permission-required
         installations = utils.find_installations(request)
 
         if installations.count() == 0:
-            github_url = 'https://github.com/apps/kiwi-tcms'
             messages.add_message(
                 request,
                 messages.WARNING,
-                _(
-                    'You have not installed Kiwi TCMS into your GitHub account! '
-                    '<a href="%s">Click here</a>!' % github_url),
+                _('Cannot find GitHub App installation for tenant "%s"' % request.tenant.name),
             )
             return HttpResponseRedirect('/')
 
