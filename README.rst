@@ -93,6 +93,7 @@ Then configure how the application interacts with GitHub:
 - Repository permissions:
 
   - Contents: Read-only
+  - Issues: Read & write (required for 1-click bug report on private repos)
   - Metadata: Read-only
 
 - User permissions:
