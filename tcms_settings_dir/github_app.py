@@ -6,8 +6,5 @@
 if 'tcms_github_app.middleware.CheckGitHubAppMiddleware' not in MIDDLEWARE:   # noqa: F821
     MIDDLEWARE.append('tcms_github_app.middleware.CheckGitHubAppMiddleware')  # noqa: F821
 
-if 'tcms_github_app.views.WebHook' not in PUBLIC_VIEWS:   # noqa: F821
-    PUBLIC_VIEWS.append('tcms_github_app.views.WebHook')  # noqa: F821
-
 if 'tcms_github_app.issues.Integration' not in EXTERNAL_BUG_TRACKERS:   # noqa: F821
     EXTERNAL_BUG_TRACKERS.append('tcms_github_app.issues.Integration')  # noqa: F821
