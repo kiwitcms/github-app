@@ -2,12 +2,12 @@
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 
-from django.conf.urls import url
+from django.urls import re_path
 from tcms_github_app import views
 
 
 urlpatterns = [
-    url(r'^appedit/$', views.ApplicationEdit.as_view(), name='github_app_edit'),
-    url(r'^resync/$', views.Resync.as_view(), name='github_app_resync'),
-    url(r'^webhook/$', views.WebHook.as_view(), name='github_app_webhook'),
+    re_path(r'^appedit/$', views.ApplicationEdit.as_view(), name='github_app_edit'),
+    re_path(r'^resync/$', views.Resync.as_view(), name='github_app_resync'),
+    re_path(r'^webhook/$', views.WebHook.as_view(), name='github_app_webhook'),
 ]
