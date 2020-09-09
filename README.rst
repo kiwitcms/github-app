@@ -110,6 +110,21 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.2 (13 Sep 2020)
+~~~~~~~~~~~~~~~~~~
+
+- Adjusted to work with Django 3.1 and Kiwi TCMS > 8.6
+- Replace deprecated ``url()`` with ``re_path()``
+- Migrate the ``payload`` field to newer ``models.JSONField`` type
+- Setting ``PUBLIC_VIEWS`` is removed in Kiwi TCMS so remove the
+  automatic adjustment
+- Make error messages for missing AppInst more clear
+- Remove redundant if condition in Resync()
+- Update translation strings
+- Update documentation around GitHub permission requirements for
+  1-click bug report
+
+
 v1.1 (05 Aug 2020)
 ~~~~~~~~~~~~~~~~~~
 
