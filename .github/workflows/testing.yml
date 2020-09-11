@@ -1,0 +1,43 @@
+name: testing
+
+on:
+  push:
+    branches: master
+  pull_request:
+
+jobs:
+
+  postgres:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Create database
+        run: |
+          docker-compose pull db
+          docker-compose run -d -p 5432:5432 --name postgresql_database db
+
+      - name: Execute tests
+        run: |
+          sudo apt-get install libkrb5-dev
+
+          pip install -r devel.txt
+
+          docker exec -i postgresql_database psql -c "ALTER USER kiwi CREATEDB;"
+
+          make check
+
+      - name: Send coverage to Coveralls
+        run: |
+          coverage report -m
+          coveralls
