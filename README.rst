@@ -1,9 +1,6 @@
 GitHub App integration for Kiwi TCMS
 ====================================
 
-.. image:: https://travis-ci.org/kiwitcms/github-app.svg?branch=master
-    :target: https://travis-ci.org/kiwitcms/github-app
-
 .. image:: https://coveralls.io/repos/github/kiwitcms/github-app/badge.svg?branch=master
    :target: https://coveralls.io/github/kiwitcms/github-app?branch=master
 
