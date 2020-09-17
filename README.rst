@@ -107,6 +107,12 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.2.1 (17 Sep 2020)
+~~~~~~~~~~~~~~~~~~~~
+
+- Require login for views.Resync()
+
+
 v1.2 (13 Sep 2020)
 ~~~~~~~~~~~~~~~~~~
 
