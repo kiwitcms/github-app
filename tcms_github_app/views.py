@@ -87,7 +87,8 @@ class ApplicationEdit(View):
         return HttpResponseRedirect('/')
 
 
-class Resync(View):  # pylint: disable=missing-permission-required
+@method_decorator(login_required, name='dispatch')  # pylint: disable=missing-permission-required
+class Resync(View):
     """
         Trigger manual resync between GitHub and Kiwi TCMS.
         Anyone who can access the current tenant/app can perform this!
