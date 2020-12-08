@@ -26,6 +26,56 @@ RECORD_EXISTS = 10
 RECORD_CREATED = 20
 
 
+class KiwiTCMSGithub(github.Github):
+    def __init__(  # pylint: disable=too-many-arguments
+            self,
+            login_or_token=None,
+            password=None,
+            jwt=None,
+            base_url=github.MainClass.DEFAULT_BASE_URL,
+            timeout=github.MainClass.DEFAULT_TIMEOUT,
+            client_id=None,
+            client_secret=None,
+            user_agent="PyGithub/Python",
+            per_page=github.MainClass.DEFAULT_PER_PAGE,
+            verify=True,
+            retry=None,
+    ):
+        super().__init__(
+            login_or_token,
+            password,
+            jwt,
+            base_url,
+            timeout,
+            client_id,
+            client_secret,
+            user_agent,
+            per_page,
+            verify,
+            retry,
+        )
+
+        # create our own b/c we can't access self.__requester from parent class
+        self.requester = github.Requester.Requester(
+            login_or_token,
+            password,
+            jwt,
+            base_url,
+            timeout,
+            client_id,
+            client_secret,
+            user_agent,
+            per_page,
+            verify,
+            retry,
+        )
+
+    def get_installation(self, inst_id):
+        return github.Installation.Installation(
+            self.requester, headers={}, attributes={"id": inst_id}, completed=True
+        )
+
+
 def find_token_from_app_inst(gh_app, installation):
     """
         Find an installation access token for this app:
@@ -50,7 +100,7 @@ def github_rpc_from_inst(installation):
                                       settings.KIWI_GITHUB_APP_PRIVATE_KEY)
 
     token = find_token_from_app_inst(gh_app, installation)
-    return github.Github(token)
+    return KiwiTCMSGithub(token)
 
 
 def github_installation_from_inst(app_inst):
