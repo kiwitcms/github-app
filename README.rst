@@ -107,6 +107,12 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.2.3 (25 Jan 2021)
+~~~~~~~~~~~~~~~~~~~~
+
+- Allow POST request (web hooks) without CSRF token
+
+
 v1.2.2 (08 Dec 2020)
 ~~~~~~~~~~~~~~~~~~~~
 
