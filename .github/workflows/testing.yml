@@ -40,4 +40,4 @@ jobs:
       - name: Send coverage to Coveralls
         run: |
           coverage report -m
-          coveralls
+          coveralls --service=github
