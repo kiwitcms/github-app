@@ -14,6 +14,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 
 from tcms.utils import github
@@ -119,7 +120,8 @@ class Resync(View):
         return HttpResponseRedirect('/')
 
 
-class WebHook(View):  # pylint: disable=missing-permission-required
+@method_decorator(csrf_exempt, name='dispatch')  # pylint: disable=missing-permission-required
+class WebHook(View):
     """
         Handles `marketplace_purchase` web hook as described at:
         https://developer.github.com/marketplace/listing-on-github-marketplace/configuring-the-github-marketplace-webhook/
