@@ -19,6 +19,7 @@ from django_tenants.utils import tenant_context
 from social_django.models import UserSocialAuth
 
 from tcms.utils import github
+from tcms.management.models import Classification
 from tcms.management.models import Product
 from tcms.management.models import Version
 from tcms.testcases.models import BugSystem
@@ -833,6 +834,84 @@ class HandleTagCreatedTestCase(AnonymousTestCase):
         for schema_name in ['public', self.tenant.schema_name]:
             with schema_context(schema_name):
                 self.assertFalse(Version.objects.filter(value='v2.0').exists())
+
+        # simulate already configured installation owned by the same user
+        # who owns the GitHub repository
+        app_inst = AppInstallationFactory(
+            sender=self.social_user.uid,
+            tenant_pk=self.tenant.pk,
+        )
+
+        payload = """
+{
+  "ref": "v2.0",
+  "ref_type": "tag",
+  "master_branch": "master",
+  "description": "an empty repository",
+  "pusher_type": "user",
+  "repository": {
+    "full_name": "kiwitcms-bot/example",
+    "private": false,
+    "owner": {
+      "login": "kiwitcms-bot",
+      "site_admin": false
+    },
+    "description": "an empty repository",
+    "fork": false,
+    "default_branch": "master"
+  },
+  "sender": {
+    "login": "%s",
+    "id": %d,
+    "type": "User",
+    "site_admin": false
+  },
+  "installation": {
+    "id": %d,
+    "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uNTY1MTMwNQ=="
+  }
+}""".strip() % (self.social_user.user.username,
+                self.social_user.uid,
+                app_inst.installation)
+
+        signature = github.calculate_signature(
+            settings.KIWI_GITHUB_APP_SECRET,
+            json.dumps(json.loads(payload)).encode())
+
+        response = self.client.post(self.url,
+                                    json.loads(payload),
+                                    content_type='application/json',
+                                    HTTP_X_HUB_SIGNATURE=signature,
+                                    HTTP_X_GITHUB_EVENT='create')
+
+        self.assertContains(response, 'ok')
+
+        with tenant_context(self.tenant):
+            self.assertTrue(Version.objects.filter(value='v2.0').exists())
+
+    @unittest.mock.patch('tcms_github_app.utils.github_rpc_from_inst')
+    def test_should_not_crash_when_version_already_exists(self, github_rpc):
+        example_repo = unittest.mock.MagicMock()
+        example_repo.fork = False
+        example_repo.full_name = 'kiwitcms-bot/example'
+        example_repo.description = 'Example description'
+        example_repo.html_url = 'https://github.com/%s' % example_repo.full_name
+
+        github_rpc.return_value.get_repo = unittest.mock.MagicMock(side_effect=[example_repo])
+
+        # make sure version already exists
+        for schema_name in ['public', self.tenant.schema_name]:
+            with schema_context(schema_name):
+                classification, _ = Classification.objects.get_or_create(
+                    name='test-products',
+                )
+                product, _ = Product.objects.get_or_create(
+                    name=example_repo.full_name,
+                    description=example_repo.description,
+                    classification=classification,
+                )
+                Version.objects.get_or_create(product=product, value='v2.0')
+                self.assertTrue(Version.objects.filter(value='v2.0').exists())
 
         # simulate already configured installation owned by the same user
         # who owns the GitHub repository
