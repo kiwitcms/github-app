@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2021 Alexander Todorov <atodorov@MrSenko.com>
 #
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 #
@@ -307,7 +307,7 @@ def create_version_from_tag(data):
         if not product:
             return
 
-        Version.objects.create(
+        Version.objects.get_or_create(
             value=data.payload['ref'],
             product=product
         )
