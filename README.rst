@@ -107,6 +107,13 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.2.4 (14 Feb 2021)
+~~~~~~~~~~~~~~~~~~~~
+
+- Don't cause ISE in case of race conditions between webhooks
+- Fix ISE for existing Version
+
+
 v1.2.3 (25 Jan 2021)
 ~~~~~~~~~~~~~~~~~~~~
 
