@@ -6,6 +6,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.core.cache import cache
+from django.db import IntegrityError
 from django.utils.translation import gettext_lazy as _
 
 import github
@@ -188,11 +189,18 @@ def _product_from_repo(repo_object):
         description = 'GitHub repository'
 
     classification, _created = Classification.objects.get_or_create(name='Imported from GitHub')
-    return Product.objects.create(
-        name=name,
-        description=description,
-        classification=classification,
-    ), RECORD_CREATED
+    try:
+        return Product.objects.create(
+            name=name,
+            description=description,
+            classification=classification,
+        ), RECORD_CREATED
+    except IntegrityError:
+        # handles possible race condition, Sentry KIWI-TCMS-FK
+        # https://sentry.io/organizations/kiwitcms/issues/2215166216
+        # which happens when this function is executed twice handling 2 GitHub
+        # web hooks which contain repository information
+        return None, RECORD_SKIPPED
 
 
 def _bugtracker_from_repo(repo_object):
