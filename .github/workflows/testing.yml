@@ -31,6 +31,7 @@ jobs:
         run: |
           sudo apt-get install libkrb5-dev
 
+          pip install -U pip
           pip install -r devel.txt
 
           docker exec -i postgresql_database psql -c "ALTER USER kiwi CREATEDB;"
