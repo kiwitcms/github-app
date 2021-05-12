@@ -24,8 +24,8 @@ from tcms_github_app.models import WebhookPayload
 from tcms_github_app import utils
 
 
-@method_decorator(login_required, name='dispatch')  # pylint: disable=missing-permission-required
-class ApplicationEdit(View):
+@method_decorator(login_required, name='dispatch')
+class ApplicationEdit(View):  # pylint: disable=missing-permission-required
     """
         If there is an App installation made on GitHub by the current user
         then allow them to edit it.
@@ -88,8 +88,8 @@ class ApplicationEdit(View):
         return HttpResponseRedirect('/')
 
 
-@method_decorator(login_required, name='dispatch')  # pylint: disable=missing-permission-required
-class Resync(View):
+@method_decorator(login_required, name='dispatch')
+class Resync(View):  # pylint: disable=missing-permission-required
     """
         Trigger manual resync between GitHub and Kiwi TCMS.
         Anyone who can access the current tenant/app can perform this!
@@ -120,8 +120,8 @@ class Resync(View):
         return HttpResponseRedirect('/')
 
 
-@method_decorator(csrf_exempt, name='dispatch')  # pylint: disable=missing-permission-required
-class WebHook(View):
+@method_decorator(csrf_exempt, name='dispatch')
+class WebHook(View):  # pylint: disable=missing-permission-required
     """
         Handles `marketplace_purchase` web hook as described at:
         https://developer.github.com/marketplace/listing-on-github-marketplace/configuring-the-github-marketplace-webhook/
