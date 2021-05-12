@@ -8,3 +8,4 @@ pylint
 pylint-django
 psycopg2
 kiwitcms>=10.0
+textdistance
