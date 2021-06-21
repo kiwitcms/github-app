@@ -107,6 +107,17 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+
+v1.3.0 (14 Feb 2021)
+~~~~~~~~~~~~~~~~~~~~
+
+- Migrate to Python 3.8
+- Always test with the latest Kiwi TCMS version
+- Adjustments to the internal test suite now that Kiwi TCMS is available via
+  source
+- Prevent crash if ``uid`` field is not a number to make it work with Keycloak
+
+
 v1.2.4 (14 Feb 2021)
 ~~~~~~~~~~~~~~~~~~~~
 
