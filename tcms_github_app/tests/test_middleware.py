@@ -1,4 +1,4 @@
-# Copyright (c) 2019 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2021 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 # pylint: disable=too-many-ancestors
@@ -65,3 +65,13 @@ class CheckGitHubAppMiddlewareTestCase(LoggedInTestCase):
 
         self.assertContains(response, 'Kiwi TCMS - Dashboard')
         self.assertNotContains(response, 'Unconfigured GitHub App')
+
+    @modify_settings(MIDDLEWARE={
+        'append': 'tcms_github_app.middleware.CheckGitHubAppMiddleware',
+    })
+    def test_dont_crash_with_keycloak(self):
+        UserSocialAuthFactory(user=self.tester, uid="kc_atodorov")
+
+        response = self.client.get('/', follow=True)
+
+        self.assertContains(response, 'Dashboard')
