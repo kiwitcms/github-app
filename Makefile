@@ -31,8 +31,13 @@ pylint:
 
 .PHONY: test_for_missing_migrations
 test_for_missing_migrations:
-	./manage.py migrate
-	./manage.py makemigrations --check
+	if [ ! -d "$(KIWI_INCLUDE_PATH)/kiwi_lint" ]; then \
+	    git clone --depth 1 https://github.com/kiwitcms/Kiwi.git $(KIWI_INCLUDE_PATH); \
+	    pip install -U -r $(KIWI_INCLUDE_PATH)/requirements/base.txt; \
+	fi
+
+	PYTHONPATH=$(KIWI_INCLUDE_PATH) ./manage.py migrate
+	PYTHONPATH=$(KIWI_INCLUDE_PATH) ./manage.py makemigrations --check
 
 .PHONY: check
 check: flake8 pylint test_for_missing_migrations test
