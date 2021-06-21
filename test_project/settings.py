@@ -9,11 +9,20 @@ import os
 import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
 # site-packages/tcms_settings_dir/ must be before ./tcms_settings_dir/
 # so we can load multi_tenant.py first!
-if BASE_DIR in sys.path:
-    sys.path.remove(BASE_DIR)
-    sys.path.append(BASE_DIR)
+home_dir = os.path.expanduser("~")
+removed_paths = []
+for path in sys.path:
+    if path.startswith(home_dir) and path.find('site-packages') == -1:
+        removed_paths.append(path)
+
+for path in removed_paths:
+    sys.path.remove(path)
+
+# re add them again
+sys.path.extend(removed_paths)
 
 import pkg_resources
 
