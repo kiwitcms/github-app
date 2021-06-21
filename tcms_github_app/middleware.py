@@ -1,4 +1,4 @@
-# Copyright (c) 2019 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2021 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 # pylint: disable=too-few-public-methods
@@ -25,7 +25,7 @@ class CheckGitHubAppMiddleware:
 
         app_inst = None
         social_user = request.user.social_auth.first()
-        if social_user:
+        if social_user and social_user.uid.isdigit():
             app_inst = AppInstallation.objects.filter(
                 sender=social_user.uid,
                 tenant_pk=None
