@@ -1,4 +1,4 @@
-# Copyright (c) 2019 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2021 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -27,20 +27,6 @@ class UserSocialAuthFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     provider = 'github-app'
     uid = factory.Sequence(lambda n: n)
-
-
-class ClassificationFactory(DjangoModelFactory):
-    class Meta:
-        model = 'management.Classification'
-    name = factory.Sequence(lambda n: 'Classification %d' % n)
-
-
-class ProductFactory(DjangoModelFactory):
-    class Meta:
-        model = 'management.Product'
-
-    name = factory.Sequence(lambda n: 'Product %d' % n)
-    classification = factory.SubFactory(ClassificationFactory)
 
 
 class AnonymousTestCase(LoggedInTestCase):
