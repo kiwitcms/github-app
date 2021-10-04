@@ -1,4 +1,4 @@
-# Copyright (c) 2019 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2021 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 # pylint: disable=too-many-ancestors
@@ -66,10 +66,10 @@ class AppInstallationAdminTestCase(LoggedInTestCase):
         self.assertContains(response,
                             '>[public] </option>')
         self.assertContains(response,
-                            '<div class="grp-readonly">%d</div>' % app.installation,
+                            f'<div class="grp-readonly">{app.installation}</div>',
                             html=True)
         self.assertContains(response,
-                            '<div class="grp-readonly">%d</div>' % app.sender,
+                            f'<div class="grp-readonly">{app.sender}</div>',
                             html=True)
 
     def test_changelist_unauthorized_for_regular_user(self):
@@ -123,14 +123,13 @@ class AppInstallationAdminTestCase(LoggedInTestCase):
             response = self.client.get(
                 reverse('admin:tcms_github_app_appinstallation_change', args=[self.app_inst.pk]))
             self.assert_fields(response, self.app_inst)
-            self.assertNotContains(response, '>[%s] </option>' % self.get_test_schema_name())
+            self.assertNotContains(response, f'>[{self.get_test_schema_name()}] </option>')
 
     def test_change_authorized_for_owner(self):
         response = self.client.get(
             reverse('admin:tcms_github_app_appinstallation_change', args=[self.app_inst_tester.pk]))
         self.assert_fields(response, self.app_inst_tester)
-        self.assertContains(response,
-                            '>[%s] </option>' % self.get_test_schema_name())
+        self.assertContains(response, f'>[{self.get_test_schema_name()}] </option>')
 
     def test_change_unauthorized_for_non_owner(self):
         with self.modify_settings(MIDDLEWARE={

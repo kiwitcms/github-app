@@ -1,4 +1,4 @@
-# Copyright (c) 2019 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2021 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 # pylint: disable=unused-argument
@@ -61,7 +61,7 @@ class ApplicationEdit(View):  # pylint: disable=missing-permission-required
                 messages.WARNING,
                 _(
                     'You have not installed Kiwi TCMS into your GitHub account! '
-                    '<a href="%s">Click here</a>!' % github_url),
+                    f'<a href="{github_url}">Click here</a>!'),
             )
             return HttpResponseRedirect('/')
         elif apps_count == 1:
@@ -101,7 +101,7 @@ class Resync(View):  # pylint: disable=missing-permission-required
             messages.add_message(
                 request,
                 messages.WARNING,
-                _('Cannot find GitHub App installation for tenant "%s"' % request.tenant.name),
+                _(f'Cannot find GitHub App installation for tenant "{request.tenant.name}"'),
             )
             return HttpResponseRedirect('/')
 

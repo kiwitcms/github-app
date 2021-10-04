@@ -149,7 +149,7 @@ class HandleRepositoryCreatedTestCase(AnonymousTestCase):
         test_repo.fork = False
         test_repo.full_name = 'kiwitcms-bot/test'
         test_repo.description = 'A test repository'
-        test_repo.html_url = 'https://github.com/%s' % test_repo.full_name
+        test_repo.html_url = f'https://github.com/{test_repo.full_name}'
 
         github_rpc.return_value.get_repo = unittest.mock.MagicMock(side_effect=[test_repo])
 
@@ -466,13 +466,13 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
         example_repo.fork = False
         example_repo.full_name = 'kiwitcms-bot/example'
         example_repo.description = 'Example description'
-        example_repo.html_url = 'https://github.com/%s' % example_repo.full_name
+        example_repo.html_url = f'https://github.com/{example_repo.full_name}'
 
         test_repo = unittest.mock.MagicMock()
         test_repo.fork = False
         test_repo.full_name = 'kiwitcms-bot/test'
         test_repo.description = 'Test description'
-        test_repo.html_url = 'https://github.com/%s' % test_repo.full_name
+        test_repo.html_url = f'https://github.com/{test_repo.full_name}'
 
         github_rpc.return_value.get_repo = unittest.mock.MagicMock(
             side_effect=[example_repo, test_repo])
@@ -574,13 +574,13 @@ class HandleInstallationCreatedTestCase(AnonymousTestCase):
         example_repo.fork = False
         example_repo.full_name = 'kiwitcms-bot/example'
         example_repo.description = 'Example description'
-        example_repo.html_url = 'https://github.com/%s' % example_repo.full_name
+        example_repo.html_url = f'https://github.com/{example_repo.full_name}'
 
         test_repo = unittest.mock.MagicMock()
         test_repo.fork = False
         test_repo.full_name = 'kiwitcms-bot/test'
         test_repo.description = 'Test description'
-        test_repo.html_url = 'https://github.com/%s' % test_repo.full_name
+        test_repo.html_url = f'https://github.com/{test_repo.full_name}'
 
         github_rpc.return_value.get_repo = unittest.mock.MagicMock(
             side_effect=[example_repo, test_repo])
@@ -827,7 +827,7 @@ class HandleTagCreatedTestCase(AnonymousTestCase):
         example_repo.fork = False
         example_repo.full_name = 'kiwitcms-bot/example'
         example_repo.description = 'Example description'
-        example_repo.html_url = 'https://github.com/%s' % example_repo.full_name
+        example_repo.html_url = f'https://github.com/{example_repo.full_name}'
 
         github_rpc.return_value.get_repo = unittest.mock.MagicMock(side_effect=[example_repo])
 
@@ -895,7 +895,7 @@ class HandleTagCreatedTestCase(AnonymousTestCase):
         example_repo.fork = False
         example_repo.full_name = 'kiwitcms-bot/example'
         example_repo.description = 'Example description'
-        example_repo.html_url = 'https://github.com/%s' % example_repo.full_name
+        example_repo.html_url = f'https://github.com/{example_repo.full_name}'
 
         github_rpc.return_value.get_repo = unittest.mock.MagicMock(side_effect=[example_repo])
 

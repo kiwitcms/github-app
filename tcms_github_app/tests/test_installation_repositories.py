@@ -35,7 +35,7 @@ class HandleInstallationRepositoriesTestCase(AnonymousTestCase):
         mock_repo.fork = False
         mock_repo.full_name = 'kiwitcms-bot/IT-CPE'
         mock_repo.description = ''
-        mock_repo.html_url = 'https://github.com/%s' % mock_repo.full_name
+        mock_repo.html_url = f'https://github.com/{mock_repo.full_name}'
 
         github_rpc.return_value.get_repo = unittest.mock.MagicMock(side_effect=[mock_repo])
 
@@ -113,7 +113,7 @@ class HandleInstallationRepositoriesTestCase(AnonymousTestCase):
         mock_repo.fork = False
         mock_repo.full_name = 'kiwitcms-bot/IT'
         mock_repo.description = ''
-        mock_repo.html_url = 'https://github.com/%s' % mock_repo.full_name
+        mock_repo.html_url = f'https://github.com/{mock_repo.full_name}'
 
         github_rpc.return_value.get_repo = unittest.mock.MagicMock(side_effect=[mock_repo])
 

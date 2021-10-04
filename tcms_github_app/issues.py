@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2020-2021 Alexander Todorov <atodorov@MrSenko.com>
 #
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 #
@@ -20,7 +20,7 @@ class GithubKiwiTCMSBot(github.Github):
     """
     bot_requester = None
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(  # pylint: disable=too-many-arguments, too-many-function-args
             self,
             login_or_token=None,
             password=None,
@@ -97,7 +97,7 @@ class Integration(GitHub):
 
         if installations.count() != 1:
             raise Exception(
-                'Cannot find GitHub App installation for tenant "%s"' % self.request.tenant.name)
+                f'Cannot find GitHub App installation for tenant "{self.request.tenant.name}"')
 
         installation = installations.first()
 

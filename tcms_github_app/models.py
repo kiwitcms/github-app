@@ -1,4 +1,4 @@
-# Copyright (c) 2019 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2021 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -27,8 +27,10 @@ class WebhookPayload(models.Model):
         ]
 
     def __str__(self):
-        return "WebhookPayload '%s' from '%s' on '%s'" % (
-            self.action, self.sender, self.received_on.isoformat())
+        return (
+            f"WebhookPayload '{self.action}' from '{self.sender}'"
+            f" on '{self.received_on.isoformat()}'"
+        )
 
 
 class AppInstallation(models.Model):
@@ -47,4 +49,4 @@ class AppInstallation(models.Model):
     settings_url = models.URLField(null=True, blank=True)
 
     def __str__(self):
-        return "GitHub App %d" % self.installation
+        return f"GitHub App {self.installation}"
