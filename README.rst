@@ -107,6 +107,11 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.3.1 (04 Oct 2021)
+~~~~~~~~~~~~~~~~~~~~
+
+- Adjust 2 parameters for changes introduced in PyGithub 1.55
+
 
 v1.3.0 (14 Feb 2021)
 ~~~~~~~~~~~~~~~~~~~~
