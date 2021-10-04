@@ -35,12 +35,11 @@ class KiwiTCMSGithub(github.Github):
             jwt=None,
             base_url=github.MainClass.DEFAULT_BASE_URL,
             timeout=github.MainClass.DEFAULT_TIMEOUT,
-            client_id=None,
-            client_secret=None,
             user_agent="PyGithub/Python",
             per_page=github.MainClass.DEFAULT_PER_PAGE,
             verify=True,
             retry=None,
+            pool_size=None,
     ):
         super().__init__(
             login_or_token,
@@ -48,12 +47,11 @@ class KiwiTCMSGithub(github.Github):
             jwt,
             base_url,
             timeout,
-            client_id,
-            client_secret,
             user_agent,
             per_page,
             verify,
             retry,
+            pool_size,
         )
 
         # create our own b/c we can't access self.__requester from parent class
@@ -63,12 +61,11 @@ class KiwiTCMSGithub(github.Github):
             jwt,
             base_url,
             timeout,
-            client_id,
-            client_secret,
             user_agent,
             per_page,
             verify,
             retry,
+            pool_size,
         )
 
     def get_installation(self, inst_id):
