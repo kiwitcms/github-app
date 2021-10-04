@@ -37,7 +37,7 @@ class CheckGitHubAppMiddlewareTestCase(LoggedInTestCase):
         response = self.client.get('/', follow=True)
 
         self.assertRedirects(response, expected_url)
-        self.assertContains(response, 'Unconfigured GitHub App %d' % app_inst.installation)
+        self.assertContains(response, f'Unconfigured GitHub App {app_inst.installation}')
 
     @modify_settings(MIDDLEWARE={
         'append': 'tcms_github_app.middleware.CheckGitHubAppMiddleware',

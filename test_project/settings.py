@@ -47,10 +47,11 @@ github_app_settings = os.path.join(
     BASE_DIR, 'tcms_settings_dir', 'github_app.py')
 
 # Kiwi TCMS loads extra settings in the same way using exec()
-exec(  # pylint: disable=exec-used
-    open(github_app_settings, "rb").read(),
-    globals()
-)
+with open(github_app_settings, "rb") as f:
+    exec(  # pylint: disable=exec-used
+        f.read(),
+        globals()
+    )
 
 # these are enabled only for testing purposes
 DEBUG = True

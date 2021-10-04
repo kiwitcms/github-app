@@ -84,7 +84,7 @@ def find_token_from_app_inst(gh_app, installation):
 
         and cache it for 50 mins!
     """
-    cache_key = "token-for-%d" % installation.installation
+    cache_key = f"token-for-{installation.installation}"
 
     token = cache.get(cache_key)
     if not token:
@@ -215,7 +215,7 @@ def _bugtracker_from_repo(repo_object):
 
     name = repo_object.full_name
     bug_system, created = BugSystem.objects.get_or_create(
-        name='GitHub Issues for %s' % name,
+        name=f'GitHub Issues for {name}',
         tracker_type='tcms_github_app.issues.Integration',
         base_url=repo_object.html_url,
     )
