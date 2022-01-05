@@ -300,9 +300,18 @@ def create_product_from_installation_repositories(data):
     with tenant_context(tenant):
         rpc = github_rpc_from_inst(installation)
         for repo in data.payload['repositories_added']:
-            repo_object = rpc.get_repo(repo['full_name'])
-            _product_from_repo(repo_object)
-            _bugtracker_from_repo(repo_object)
+            try:
+                repo_object = rpc.get_repo(repo['full_name'])
+                _product_from_repo(repo_object)
+                _bugtracker_from_repo(repo_object)
+            except github.UnknownObjectException:
+                # KIWI-TCMS-EA
+                # https://sentry.io/organizations/kiwitcms/issues/1869016907/
+                # Not sure when & how this happens, the repo is accessible on GitHub but
+                # it is a fork, not a source repo.
+                # In any case, if we can't get the data from GitHub there's nothing
+                # we can do here!
+                continue
 
 
 def create_installation(data):
