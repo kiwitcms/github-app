@@ -1,6 +1,6 @@
 # pylint: disable=missing-docstring
 
-# Copyright (c) 2019-2021 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2022 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -25,7 +25,7 @@ def get_install_requires(path):
 
 setup(
     name='kiwitcms-github-app',
-    version='1.3.1',
+    version='1.3.2',
     description='GitHub App integration for Kiwi TCMS',
     long_description=get_long_description(),
     author='Kiwi TCMS',

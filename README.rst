@@ -107,6 +107,15 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.3.2 (05 Jan 2022)
+~~~~~~~~~~~~~~~~~~~~
+
+- Don't crash on 404 from GitHub. Fixes
+  `KIWI-TCMS-EA <https://sentry.io/organizations/kiwitcms/issues/1869016907/>`_
+- Workaround upstream <https://github.com/PyGithub/PyGithub/pull/2079>. Fixes
+  `KIWI-TCMS-HD <https://sentry.io/organizations/kiwitcms/issues/2835963408>`_
+
+
 v1.3.1 (04 Oct 2021)
 ~~~~~~~~~~~~~~~~~~~~
 
