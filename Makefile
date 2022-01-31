@@ -8,7 +8,8 @@ test:
 	    pip install -U -r $(KIWI_INCLUDE_PATH)/requirements/base.txt; \
 	fi
 
-	PYTHONPATH=$(KIWI_INCLUDE_PATH) PYTHONWARNINGS=d EXECUTOR=standard AUTO_CREATE_SCHEMA='' coverage run \
+	PYTHONPATH=$(KIWI_INCLUDE_PATH) PYTHONWARNINGS=d EXECUTOR=standard AUTO_CREATE_SCHEMA='' \
+	KIWI_TENANTS_DOMAIN="example.org" coverage run \
 	    --include "tcms_github_app/*.py" \
 	    --omit "tcms_github_app/tests/*.py" \
 	    ./manage.py test -v2 tcms_github_app.tests
@@ -38,8 +39,8 @@ test_for_missing_migrations:
 	    pip install -U -r $(KIWI_INCLUDE_PATH)/requirements/base.txt; \
 	fi
 
-	PYTHONPATH=$(KIWI_INCLUDE_PATH) ./manage.py migrate
-	PYTHONPATH=$(KIWI_INCLUDE_PATH) ./manage.py makemigrations --check
+	PYTHONPATH=$(KIWI_INCLUDE_PATH) KIWI_TENANTS_DOMAIN="example.org" ./manage.py migrate
+	PYTHONPATH=$(KIWI_INCLUDE_PATH) KIWI_TENANTS_DOMAIN="example.org" ./manage.py makemigrations --check
 
 .PHONY: check
 check: flake8 pylint test_for_missing_migrations test
