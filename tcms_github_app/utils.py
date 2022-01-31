@@ -83,7 +83,7 @@ class PatchGithubIntegration(github.GithubIntegration):
         Remove when https://github.com/PyGithub/PyGithub/pull/2079 gets merged!
         """
         import requests  # pylint: disable=import-outside-toplevel
-        from github import Consts, GithubException, InstallationAuthorization  # pylint: disable=import-outside-toplevel
+        from github import Consts, InstallationAuthorization  # pylint: disable=import-outside-toplevel
 
         body = {}
         if user_id:
@@ -106,16 +106,16 @@ class PatchGithubIntegration(github.GithubIntegration):
                 completed=True,
             )
         elif response.status_code == 403:
-            raise GithubException.BadCredentialsException(  # pylint: disable=no-member
+            raise github.BadCredentialsException(
                 status=response.status_code, data=response.text,
                 headers=response.headers,
             )
         elif response.status_code == 404:
-            raise GithubException.UnknownObjectException(  # pylint: disable=no-member
+            raise github.UnknownObjectException(
                 status=response.status_code, data=response.text,
                 headers=response.headers,
             )
-        raise GithubException.GithubException(  # pylint: disable=no-member
+        raise github.GithubException(
             status=response.status_code, data=response.text,
             headers=response.headers,
         )
