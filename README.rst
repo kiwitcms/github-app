@@ -107,6 +107,13 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.3.3 (31 Jan 2022)
+~~~~~~~~~~~~~~~~~~~~
+
+- Fix for GitHub exceptions. Fixes
+  `KIWI-TCMS-HH <https://sentry.io/organizations/kiwitcms/issues/2959079667>`_
+
+
 v1.3.2 (05 Jan 2022)
 ~~~~~~~~~~~~~~~~~~~~
 
