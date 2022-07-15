@@ -1,3 +1,5 @@
+# pylint: disable=invalid-name
+
 """
     Migrates the `payload' field from the older
     django.contrib.postgres.JSONField type to the newer
