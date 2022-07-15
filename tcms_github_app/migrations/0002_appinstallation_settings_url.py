@@ -1,3 +1,5 @@
+# pylint: disable=invalid-name, unused-argument
+
 from django.db import migrations, models
 
 
