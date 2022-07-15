@@ -3,6 +3,7 @@
 factory_boy
 flake8
 coveralls
+kiwitcms-django-plugin
 PyGithub
 pylint
 pylint-django

@@ -1,4 +1,4 @@
-# Copyright (c) 2019 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2022 Alexander Todorov <atodorov@MrSenko.com>
 #
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 #
@@ -110,3 +110,6 @@ Yp38AwKBgBrNcGBQLrOXqmEJ0tYLg7DIoxvJrLvxtu2mbdohWS9rQFjkkA7+IsML
 e6AQ/4uLtKdXZafgGSgqJ6tlB3J924Vb0HWmvnBcc2JCEPkgjuVDjXEMaqwIKjHa
 a3C9rG6XtvAyGvIbXKI3tCNURbsjsgVwOgS6kESboZ576iDeH/eO
 -----END RSA PRIVATE KEY-----""".strip()
+
+# Allows us to hook-up kiwitcms-django-plugin at will
+TEST_RUNNER = os.environ.get("DJANGO_TEST_RUNNER", "django.test.runner.DiscoverRunner")
