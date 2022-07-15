@@ -1,4 +1,4 @@
-KIWI_INCLUDE_PATH="../Kiwi/"
+KIWI_INCLUDE_PATH=../Kiwi
 PATH_TO_SITE_PACKAGES = $(shell python -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')
 
 .PHONY: test
