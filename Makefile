@@ -1,11 +1,12 @@
 KIWI_INCLUDE_PATH="../Kiwi/"
-
+PATH_TO_SITE_PACKAGES = $(shell python -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')
 
 .PHONY: test
 test:
 	if [ ! -d "$(KIWI_INCLUDE_PATH)/kiwi_lint" ]; then \
 	    git clone --depth 1 https://github.com/kiwitcms/Kiwi.git $(KIWI_INCLUDE_PATH); \
 	    pip install -U -r $(KIWI_INCLUDE_PATH)/requirements/base.txt; \
+	    rm -rf $(PATH_TO_SITE_PACKAGES)/test_project; \
 	fi
 
 	PYTHONPATH=$(KIWI_INCLUDE_PATH) PYTHONWARNINGS=d EXECUTOR=standard AUTO_CREATE_SCHEMA='' \
@@ -25,6 +26,7 @@ pylint:
 	if [ ! -d "$(KIWI_INCLUDE_PATH)/kiwi_lint" ]; then \
 	    git clone --depth 1 https://github.com/kiwitcms/Kiwi.git $(KIWI_INCLUDE_PATH); \
 	    pip install -U -r $(KIWI_INCLUDE_PATH)/requirements/base.txt; \
+	    rm -rf $(PATH_TO_SITE_PACKAGES)/test_project; \
 	fi
 
 	PYTHONPATH=$(KIWI_INCLUDE_PATH) DJANGO_SETTINGS_MODULE="test_project.settings" \
@@ -37,6 +39,7 @@ test_for_missing_migrations:
 	if [ ! -d "$(KIWI_INCLUDE_PATH)/kiwi_lint" ]; then \
 	    git clone --depth 1 https://github.com/kiwitcms/Kiwi.git $(KIWI_INCLUDE_PATH); \
 	    pip install -U -r $(KIWI_INCLUDE_PATH)/requirements/base.txt; \
+	    rm -rf $(PATH_TO_SITE_PACKAGES)/test_project; \
 	fi
 
 	PYTHONPATH=$(KIWI_INCLUDE_PATH) KIWI_TENANTS_DOMAIN="example.org" ./manage.py migrate
