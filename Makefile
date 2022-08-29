@@ -9,7 +9,7 @@ test:
 	    rm -rf $(PATH_TO_SITE_PACKAGES)/test_project; \
 	fi
 
-	PYTHONPATH=$(KIWI_INCLUDE_PATH) PYTHONWARNINGS=d EXECUTOR=standard AUTO_CREATE_SCHEMA='' \
+	PYTHONPATH=.:$(KIWI_INCLUDE_PATH) PYTHONWARNINGS=d EXECUTOR=standard AUTO_CREATE_SCHEMA='' \
 	KIWI_TENANTS_DOMAIN="example.org" coverage run \
 	    --include "tcms_github_app/*.py" \
 	    --omit "tcms_github_app/tests/*.py" \
@@ -29,7 +29,7 @@ pylint:
 	    rm -rf $(PATH_TO_SITE_PACKAGES)/test_project; \
 	fi
 
-	PYTHONPATH=$(KIWI_INCLUDE_PATH) DJANGO_SETTINGS_MODULE="test_project.settings" \
+	PYTHONPATH=.:$(KIWI_INCLUDE_PATH) DJANGO_SETTINGS_MODULE="test_project.settings" \
 	pylint --load-plugins=pylint_django --load-plugins=kiwi_lint -d similar-string \
 	        -d missing-docstring -d duplicate-code -d module-in-directory-without-init \
 	        *.py tcms_github_app/ test_project/ tcms_settings_dir/
@@ -42,8 +42,8 @@ test_for_missing_migrations:
 	    rm -rf $(PATH_TO_SITE_PACKAGES)/test_project; \
 	fi
 
-	PYTHONPATH=$(KIWI_INCLUDE_PATH) KIWI_TENANTS_DOMAIN="example.org" ./manage.py migrate
-	PYTHONPATH=$(KIWI_INCLUDE_PATH) KIWI_TENANTS_DOMAIN="example.org" ./manage.py makemigrations --check
+	PYTHONPATH=.:$(KIWI_INCLUDE_PATH) KIWI_TENANTS_DOMAIN="example.org" ./manage.py migrate
+	PYTHONPATH=.:$(KIWI_INCLUDE_PATH) KIWI_TENANTS_DOMAIN="example.org" ./manage.py makemigrations --check
 
 .PHONY: check
 check: flake8 pylint test_for_missing_migrations test
