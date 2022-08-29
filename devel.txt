@@ -2,7 +2,7 @@
 
 factory_boy
 flake8
-coveralls
+coverage
 kiwitcms-django-plugin
 PyGithub
 pylint

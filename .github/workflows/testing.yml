@@ -53,7 +53,12 @@ jobs:
 
           make check
 
-      - name: Send coverage to Coveralls
+      - name: Local coverage report
         run: |
           coverage report -m
-          coveralls --service=github
+
+      - name: Send coverage to CodeCov
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+          verbose: true
