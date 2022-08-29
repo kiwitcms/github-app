@@ -96,6 +96,7 @@ class PatchGithubIntegration(github.GithubIntegration):
                 "User-Agent": "PyGithub/Python",
             },
             json=body,
+            timeout=30,
         )
 
         if response.status_code == 201:  # pylint: disable=no-else-return
