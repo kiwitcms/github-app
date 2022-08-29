@@ -27,9 +27,27 @@ class CheckGitHubAppMiddlewareTestCase(LoggedInTestCase):
     @modify_settings(MIDDLEWARE={
         'append': 'tcms_github_app.middleware.CheckGitHubAppMiddleware',
     })
-    def test_redirects_when_unconfigured_installation(self):
+    def test_doesnt_redirect_for_regular_user_when_unconfigured_installation(self):
         # simulate unconfigured installation
         social_user = UserSocialAuthFactory(user=self.tester)
+        app_inst = AppInstallationFactory(sender=int(social_user.uid))
+
+        # self.tester != self.tenant.owner => will not redirect
+        response = self.client.get('/', follow=True)
+        self.assertNotContains(response, f'Unconfigured GitHub App {app_inst.installation}')
+
+    @modify_settings(MIDDLEWARE={
+        'append': 'tcms_github_app.middleware.CheckGitHubAppMiddleware',
+    })
+    def test_redirects_for_tenant_owner_when_unconfigured_installation(self):
+        self.client.logout()
+        self.client.login(
+            username=self.tenant.owner.username,
+            password='password',
+        )
+
+        # simulate unconfigured installation
+        social_user = UserSocialAuthFactory(user=self.tenant.owner)
         app_inst = AppInstallationFactory(sender=int(social_user.uid))
         expected_url = reverse('admin:tcms_github_app_appinstallation_change',
                                args=[app_inst.pk])

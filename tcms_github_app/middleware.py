@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2021 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2022 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 # pylint: disable=too-few-public-methods
@@ -21,6 +21,10 @@ class CheckGitHubAppMiddleware:
 
     def __call__(self, request):
         if not request.user.is_authenticated or request.method != "GET":
+            return self.get_response(request)
+
+        tenant = getattr(request, "tenant")
+        if not tenant or tenant.owner != request.user:
             return self.get_response(request)
 
         app_inst = None
