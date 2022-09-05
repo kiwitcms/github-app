@@ -107,6 +107,15 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.4.0 (05 Sep 2022)
+~~~~~~~~~~~~~~~~~~~~
+
+- Don't ask user to configure GitHub App if they are not tenant owner. Breaks
+  an endless loop cycle in case tenant creation goes wrong
+- Specify 30 sec timeout for internal HTTP requests
+- Improvements to CI
+
+
 v1.3.3 (31 Jan 2022)
 ~~~~~~~~~~~~~~~~~~~~
 
