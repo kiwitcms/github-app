@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2021 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2020-2023 Alexander Todorov <atodorov@MrSenko.com>
 #
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 #
@@ -96,7 +96,7 @@ class Integration(GitHub):
         installations = utils.find_installations(self.request)
 
         if installations.count() != 1:
-            raise Exception(
+            raise RuntimeError(
                 f'Cannot find GitHub App installation for tenant "{self.request.tenant.name}"')
 
         installation = installations.first()
