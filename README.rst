@@ -107,6 +107,13 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.4.1 (13 Feb 2023)
+~~~~~~~~~~~~~~~~~~~~
+
+- Adjust arguments for latest github.Github implementation
+- Raise RuntimeError instead of Exception
+
+
 v1.4.0 (05 Sep 2022)
 ~~~~~~~~~~~~~~~~~~~~
 
