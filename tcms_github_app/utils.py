@@ -27,7 +27,7 @@ RECORD_EXISTS = 10
 RECORD_CREATED = 20
 
 
-class KiwiTCMSGithub(github.Github):
+class PatchedGithub(github.Github):
     def __init__(  # pylint: disable=too-many-arguments
             self,
             login_or_token=None,
@@ -74,7 +74,7 @@ class KiwiTCMSGithub(github.Github):
         )
 
 
-class PatchGithubIntegration(github.GithubIntegration):
+class PatchedGithubIntegration(github.GithubIntegration):
     def get_access_token(self, installation_id, user_id=None):
         """
         Workaround for KIWI-TCMS-HD,
@@ -142,11 +142,11 @@ def find_token_from_app_inst(gh_app, installation):
 
 
 def github_rpc_from_inst(installation):
-    gh_app = PatchGithubIntegration(settings.KIWI_GITHUB_APP_ID,
-                                    settings.KIWI_GITHUB_APP_PRIVATE_KEY)
+    gh_app = PatchedGithubIntegration(settings.KIWI_GITHUB_APP_ID,
+                                      settings.KIWI_GITHUB_APP_PRIVATE_KEY)
 
     token = find_token_from_app_inst(gh_app, installation)
-    return KiwiTCMSGithub(token)
+    return PatchedGithub(token)
 
 
 def github_installation_from_inst(app_inst):
