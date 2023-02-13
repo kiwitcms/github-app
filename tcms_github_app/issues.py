@@ -27,12 +27,11 @@ class GithubKiwiTCMSBot(github.Github):
             jwt=None,
             base_url=github.MainClass.DEFAULT_BASE_URL,
             timeout=github.MainClass.DEFAULT_TIMEOUT,
-            client_id=None,
-            client_secret=None,
             user_agent="PyGithub/Python",
             per_page=github.MainClass.DEFAULT_PER_PAGE,
             verify=True,
             retry=None,
+            pool_size=None,
     ):
         super().__init__(
             login_or_token,
@@ -40,12 +39,11 @@ class GithubKiwiTCMSBot(github.Github):
             jwt,
             base_url,
             timeout,
-            client_id,
-            client_secret,
             user_agent,
             per_page,
             verify,
             retry,
+            pool_size,
         )
 
         social_user = UserSocialAuth.objects.filter(user__username='kiwitcms-bot').first()
@@ -56,12 +54,11 @@ class GithubKiwiTCMSBot(github.Github):
                 jwt,
                 base_url,
                 timeout,
-                client_id,
-                client_secret,
                 user_agent,
                 per_page,
                 verify,
                 retry,
+                pool_size,
             )
 
     def get_repo(self, full_name_or_id, lazy=False):
