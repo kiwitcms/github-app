@@ -47,7 +47,7 @@ class GithubKiwiTCMSBot(github.Github):
         )
 
         social_user = UserSocialAuth.objects.filter(user__username='kiwitcms-bot').first()
-        if social_user:
+        if social_user and "access_token" in social_user.extra_data:
             self.bot_requester = github.Requester.Requester(
                 social_user.extra_data['access_token'],
                 password,
