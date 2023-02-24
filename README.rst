@@ -107,6 +107,14 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.5.0 (24 Feb 2023)
+~~~~~~~~~~~~~~~~~~~~
+
+- Refactor code so it works with PyGithub==1.58.0
+- Remove PatchedGithubIntegration class
+- Add sanity tests for upstream/downstream interfaces for PyGithub
+
+
 v1.4.1 (13 Feb 2023)
 ~~~~~~~~~~~~~~~~~~~~
 
