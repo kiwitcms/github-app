@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2021 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2023 Alexander Todorov <atodorov@MrSenko.com>
 #
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 #
@@ -77,54 +77,6 @@ class PatchedGithub(github.Github):
         )
 
 
-class PatchedGithubIntegration(github.GithubIntegration):
-    def get_access_token(self, installation_id, user_id=None):
-        """
-        Workaround for KIWI-TCMS-HD,
-        https://sentry.io/organizations/kiwitcms/issues/2835963408
-
-        Remove when https://github.com/PyGithub/PyGithub/pull/2079 gets merged!
-        """
-        import requests  # pylint: disable=import-outside-toplevel
-        from github import Consts, InstallationAuthorization  # pylint: disable=import-outside-toplevel
-
-        body = {}
-        if user_id:
-            body = {"user_id": user_id}
-        response = requests.post(
-            f"{self.base_url}/app/installations/{installation_id}/access_tokens",
-            headers={
-                "Authorization": f"Bearer {self.create_jwt()}",
-                "Accept": Consts.mediaTypeIntegrationPreview,
-                "User-Agent": "PyGithub/Python",
-            },
-            json=body,
-            timeout=30,
-        )
-
-        if response.status_code == 201:  # pylint: disable=no-else-return
-            return InstallationAuthorization.InstallationAuthorization(
-                requester=None,  # not required, this is a NonCompletableGithubObject
-                headers={},  # not required, this is a NonCompletableGithubObject
-                attributes=response.json(),
-                completed=True,
-            )
-        elif response.status_code == 403:
-            raise github.BadCredentialsException(
-                status=response.status_code, data=response.text,
-                headers=response.headers,
-            )
-        elif response.status_code == 404:
-            raise github.UnknownObjectException(
-                status=response.status_code, data=response.text,
-                headers=response.headers,
-            )
-        raise github.GithubException(
-            status=response.status_code, data=response.text,
-            headers=response.headers,
-        )
-
-
 def find_token_from_app_inst(gh_app, installation):
     """
         Find an installation access token for this app:
@@ -145,7 +97,7 @@ def find_token_from_app_inst(gh_app, installation):
 
 
 def github_rpc_from_inst(installation):
-    gh_app = PatchedGithubIntegration(settings.KIWI_GITHUB_APP_ID,
+    gh_app = github.GithubIntegration(settings.KIWI_GITHUB_APP_ID,
                                       settings.KIWI_GITHUB_APP_PRIVATE_KEY)
 
     token = find_token_from_app_inst(gh_app, installation)
