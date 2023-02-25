@@ -35,7 +35,7 @@ jobs:
           echo "username = kiwitcms-bot" >> ~/.tcms.conf
           echo "password = ${{ secrets.TCMS_PASSWORD }}" >> ~/.tcms.conf
 
-      - name: Execute tests
+      - name: Install dependencies
         run: |
           sudo apt-get install libkrb5-dev
 
@@ -43,6 +43,11 @@ jobs:
 
           docker exec -i postgresql_database psql -c "ALTER USER kiwi CREATEDB;"
 
+      - name: Execute tests
+        env:
+          KIWI_GITHUB_APP_ID: ${{ secrets.KIWI_GITHUB_APP_ID }}
+          KIWI_GITHUB_APP_PRIVATE_KEY: ${{ secrets.KIWI_GITHUB_APP_PRIVATE_KEY }}
+        run: |
           # report to Kiwi TCMS only if we have access to secrets
           if [ -n "${{ secrets.TCMS_PASSWORD }}" ]; then
               export DJANGO_TEST_RUNNER="tcms_django_plugin.TestRunner"

@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2022 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2023 Alexander Todorov <atodorov@MrSenko.com>
 #
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 #
@@ -81,8 +81,8 @@ KIWI_TENANTS_DOMAIN = 'tenants.localdomain'
 # NOTE: must be bytes, not string
 KIWI_GITHUB_APP_SECRET = b'S3cr3t'
 
-KIWI_GITHUB_APP_ID = 12345
-KIWI_GITHUB_APP_PRIVATE_KEY = """
+KIWI_GITHUB_APP_ID = os.getenv("KIWI_GITHUB_APP_ID", "1234567890")
+KIWI_GITHUB_APP_PRIVATE_KEY = os.getenv("KIWI_GITHUB_APP_PRIVATE_KEY", """
 -----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEAtJFKoaSWDYpUvdjUaqW3Ft5p9O78rwJEBuJnEmmCPmZTz1tz
 Hh2suPtWvolU/E1oOhbu0YPLHke0TC5uuBg5i5oA3b1UyfHdSiUYKmp0Mp9wkOpS
@@ -109,7 +109,7 @@ w5i+oLmLdkqosU759s1Z/8bPv3TkGI/i8Oeveq1pxE7GdqDYJqYA1TnUrJfq5sAI
 Yp38AwKBgBrNcGBQLrOXqmEJ0tYLg7DIoxvJrLvxtu2mbdohWS9rQFjkkA7+IsML
 e6AQ/4uLtKdXZafgGSgqJ6tlB3J924Vb0HWmvnBcc2JCEPkgjuVDjXEMaqwIKjHa
 a3C9rG6XtvAyGvIbXKI3tCNURbsjsgVwOgS6kESboZ576iDeH/eO
------END RSA PRIVATE KEY-----""".strip()
+-----END RSA PRIVATE KEY-----""").strip()
 
 # Allows us to hook-up kiwitcms-django-plugin at will
 TEST_RUNNER = os.environ.get("DJANGO_TEST_RUNNER", "django.test.runner.DiscoverRunner")
