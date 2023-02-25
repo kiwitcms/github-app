@@ -4,6 +4,7 @@ factory_boy
 flake8
 coverage
 kiwitcms-django-plugin
+parameterized
 pylint
 pylint-django
 psycopg2
