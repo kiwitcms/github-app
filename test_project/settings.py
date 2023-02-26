@@ -74,7 +74,7 @@ ROOT_URLCONF = 'test_project.urls'
 
 # Allows serving non-public tenants on a sub-domain
 # WARNING: doesn't work well when you have a non-standard port-number
-KIWI_TENANTS_DOMAIN = 'tenants.localdomain'
+KIWI_TENANTS_DOMAIN = os.getenv("KIWI_TENANTS_DOMAIN", 'tenants.localdomain')
 
 
 # application specific configuration
