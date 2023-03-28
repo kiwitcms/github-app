@@ -107,6 +107,13 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.5.1 (28 Mar 2023)
+~~~~~~~~~~~~~~~~~~~~
+
+- Unpin PyGithub dependency
+- Add more tests
+
+
 v1.5.0 (24 Feb 2023)
 ~~~~~~~~~~~~~~~~~~~~
 
