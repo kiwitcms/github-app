@@ -1,4 +1,3 @@
-PyGithub
 social-auth-app-django
 social-auth-core>=3.3.0
 kiwitcms-tenants
