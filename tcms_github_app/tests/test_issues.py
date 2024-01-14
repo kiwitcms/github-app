@@ -1,4 +1,4 @@
-# Copyright (c) 2023 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2023-2024 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 # pylint: disable=attribute-defined-outside-init
@@ -40,7 +40,7 @@ class TestGitHubIntegration(LoggedInTestCase):
         cls.execution_1.run.save()
 
         cls.component = ComponentFactory(
-            name="GitHub integration", product=cls.execution_1.run.plan.product
+            name="GitHub integration", product=cls.execution_1.build.version.product
         )
         cls.execution_1.case.add_component(cls.component)
 
@@ -171,7 +171,7 @@ class TestGitHubIntegration(LoggedInTestCase):
         for expected_string in [
             f"Filed from execution {self.execution_1.get_full_url()}",
             "Reporter",
-            self.execution_1.run.plan.product.name,
+            self.execution_1.build.version.product.name,
             self.component.name,
             "Steps to reproduce",
             self.execution_1.case.text,
