@@ -7,5 +7,5 @@ kiwitcms-django-plugin
 parameterized
 pylint
 pylint-django
-psycopg2
+psycopg>=3.1.17
 textdistance
