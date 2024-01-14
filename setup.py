@@ -46,6 +46,7 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.11',
     ],
     entry_points={"kiwitcms.plugins": ["kiwitcms_github_app = tcms_github_app"]},
 )
