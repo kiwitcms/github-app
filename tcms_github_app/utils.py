@@ -36,7 +36,7 @@ class PatchedGithub(github.Github):
         https://github.com/PyGithub/PyGithub/issues/1776
         """
         # b/c this is self.__requester in the parent class
-        requester = self._Github__requester  # pylint: disable=protected-access
+        requester = self._Github__requester  # pylint: disable=protected-access,no-member
 
         return github.Installation.Installation(
             requester, headers={}, attributes={"id": inst_id}, completed=True
