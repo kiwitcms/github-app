@@ -1,7 +1,7 @@
 # Copyright (c) 2023-2024 Alexander Todorov <atodorov@MrSenko.com>
 
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 
 import inspect
 import unittest
@@ -22,4 +22,8 @@ class PyGithubInterfaces(unittest.TestCase):
         self.assertEqual(signature_for_downstream_github, signature_for_upstream_github)
 
     def test_instantiate_an_object_from_utils_PatchedGithub_class(self):
-        utils.PatchedGithub("testing-token")
+        inst = utils.PatchedGithub("testing-token")
+        self.assertIsNotNone(inst._Github__requester)
+
+        inst = github.Github("testing-token")
+        self.assertIsNotNone(inst._Github__requester)
