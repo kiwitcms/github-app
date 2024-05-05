@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2023 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2024 Alexander Todorov <atodorov@MrSenko.com>
 #
 # Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
 #
@@ -28,52 +28,18 @@ RECORD_CREATED = 20
 
 
 class PatchedGithub(github.Github):
-    def __init__(  # pylint: disable=too-many-arguments
-            self,
-            login_or_token=None,
-            password=None,
-            jwt=None,
-            app_auth=None,
-            base_url=github.Consts.DEFAULT_BASE_URL,
-            timeout=github.Consts.DEFAULT_TIMEOUT,
-            user_agent="PyGithub/Python",
-            per_page=github.Consts.DEFAULT_PER_PAGE,
-            verify=True,
-            retry=None,
-            pool_size=None,
-    ):
-        super().__init__(
-            login_or_token,
-            password,
-            jwt,
-            app_auth,
-            base_url,
-            timeout,
-            user_agent,
-            per_page,
-            verify,
-            retry,
-            pool_size,
-        )
-
-        # create our own b/c we can't access self.__requester from parent class
-        self.requester = github.Requester.Requester(
-            login_or_token,
-            password,
-            jwt,
-            app_auth,
-            base_url,
-            timeout,
-            user_agent,
-            per_page,
-            verify,
-            retry,
-            pool_size,
-        )
-
     def get_installation(self, inst_id):
+        """
+        Method removed in https://github.com/PyGithub/PyGithub/pull/1738.
+
+        Doesn't look like it will be introduced again:
+        https://github.com/PyGithub/PyGithub/issues/1776
+        """
+        # b/c this is self.__requester in the parent class
+        requester = self._Github__requester  # pylint: disable=protected-access
+
         return github.Installation.Installation(
-            self.requester, headers={}, attributes={"id": inst_id}, completed=True
+            requester, headers={}, attributes={"id": inst_id}, completed=True
         )
 
 
