@@ -34,11 +34,13 @@ class Integration(GitHub):
 
         installation = installations.first()
 
-        gh_app = github.GithubIntegration(settings.KIWI_GITHUB_APP_ID,
-                                          settings.KIWI_GITHUB_APP_PRIVATE_KEY)
+        gh_app = github.GithubIntegration(
+            auth=github.Auth.AppAuth(settings.KIWI_GITHUB_APP_ID,
+                                     settings.KIWI_GITHUB_APP_PRIVATE_KEY),
+        )
 
         token = utils.find_token_from_app_inst(gh_app, installation)
-        return github.Github(token)
+        return github.Github(auth=github.Auth.Token(token))
 
     def is_adding_testcase_to_issue_disabled(self):
         """

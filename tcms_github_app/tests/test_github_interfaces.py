@@ -22,8 +22,8 @@ class PyGithubInterfaces(unittest.TestCase):
         self.assertEqual(signature_for_downstream_github, signature_for_upstream_github)
 
     def test_instantiate_an_object_from_utils_PatchedGithub_class(self):
-        inst = utils.PatchedGithub("testing-token")
+        inst = utils.PatchedGithub(auth=github.Auth.Token("testing-token"))
         self.assertIsNotNone(inst._Github__requester)
 
-        inst = github.Github("testing-token")
+        inst = github.Github(auth=github.Auth.Token("testing-token"))
         self.assertIsNotNone(inst._Github__requester)
