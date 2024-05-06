@@ -107,6 +107,16 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v1.7.0 (06 May 2024)
+~~~~~~~~~~~~~~~~~~~~
+
+- Pin indirect requirements to reduce the chance of installing vulnerable
+  dependencies
+- Remove the wrapper ``GithubKiwiTCMSBot()`` class
+- Simplify ``self.requester`` override in ``PatchedGithub()`` class
+- Start using the new GitHub Auth parameters introduced in PyGithub==1.59.0
+
+
 v1.6.0 (15 Jan 2024)
 ~~~~~~~~~~~~~~~~~~~~
 
