@@ -104,7 +104,7 @@ Then configure how the application interacts with GitHub:
   - Repository
 
 
-Changelog
+Changelog - DEBUG
 ---------
 
 v1.7.0 (06 May 2024)
