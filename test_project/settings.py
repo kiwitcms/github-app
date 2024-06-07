@@ -1,6 +1,7 @@
-# Copyright (c) 2019-2023 Alexander Todorov <atodorov@MrSenko.com>
+# Copyright (c) 2019-2023 Alexander Todorov <atodorov@otb.bg>
 #
-# Licensed under the GPL 3.0: https://www.gnu.org/licenses/gpl-3.0.txt
+# Licensed under GNU Affero General Public License v3 or later (AGPLv3+)
+# https://www.gnu.org/licenses/agpl-3.0.html
 #
 # pylint: disable=invalid-name,protected-access,wrong-import-position
 # pylint: disable=wildcard-import, unused-wildcard-import
