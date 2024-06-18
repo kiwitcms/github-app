@@ -107,6 +107,14 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v2.0.1 (18 Jun 2024)
+~~~~~~~~~~~~~~~~~~~~
+
+- Filter DB only for 'github-app' instead of unconditionally using the first
+  record. Fixes
+  `Sentry KIWI-TCMS-P5 <https://kiwitcms.sentry.io/issues/5501934208/?project=277775>`_
+
+
 v2.0.0 (07 Jun 2024)
 ~~~~~~~~~~~~~~~~~~~~
 
