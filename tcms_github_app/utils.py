@@ -121,7 +121,7 @@ def find_installations(request):
     # if there are more than 1 (usually on public) then try to find the installation
     # performed by the current user, e.g. on their own account
     if installations.count() > 1:
-        social_user = request.user.social_auth.first()
+        social_user = request.user.social_auth.filter(provider='github-app').first()
         if social_user:
             installations = installations.filter(sender=social_user.uid)
 

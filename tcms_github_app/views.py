@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2021 Alexander Todorov <atodorov@otb.bg>
+# Copyright (c) 2019-2024 Alexander Todorov <atodorov@otb.bg>
 #
 # Licensed under GNU Affero General Public License v3 or later (AGPLv3+)
 # https://www.gnu.org/licenses/agpl-3.0.html
@@ -41,7 +41,7 @@ class ApplicationEdit(View):  # pylint: disable=missing-permission-required
             a ``@permission_required`` decorator here!
     """
     def get(self, request, *args, **kwargs):
-        social_user = request.user.social_auth.first()
+        social_user = request.user.social_auth.filter(provider='github-app').first()
         if not social_user:
             github_url = reverse('social:begin', args=['github-app'])
             messages.add_message(
