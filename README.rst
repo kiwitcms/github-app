@@ -1,3 +1,5 @@
+Ignore: Retest with Django 5
+
 GitHub App integration for Kiwi TCMS
 ====================================
 
