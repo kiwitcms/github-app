@@ -25,8 +25,8 @@ jobs:
 
       - name: Create database
         run: |
-          docker-compose pull db
-          docker-compose run -d -p 5432:5432 --name postgresql_database db
+          docker compose pull db
+          docker compose run -d -p 5432:5432 --name postgresql_database db
 
       - name: Configure ~/.tcms.conf for ${{ matrix.kiwitcms-url }}
         run: |
