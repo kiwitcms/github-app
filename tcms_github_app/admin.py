@@ -61,7 +61,7 @@ class AppInstallationChangeForm(forms.ModelForm):
         required=False
     )
 
-    def __init__(self,  # pylint: disable=too-many-arguments
+    def __init__(self,  # pylint: disable=too-many-arguments,too-many-positional-arguments
                  data=None, files=None, auto_id='id_%s', prefix=None,
                  initial=None, error_class=ErrorList, label_suffix=None,
                  empty_permitted=False, instance=None, use_required_attribute=None,
