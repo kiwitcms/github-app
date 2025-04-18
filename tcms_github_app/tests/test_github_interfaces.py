@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2024 Alexander Todorov <atodorov@otb.bg>
+# Copyright (c) 2023-2025 Alexander Todorov <atodorov@otb.bg>
 #
 # Licensed under GNU Affero General Public License v3 or later (AGPLv3+)
 # https://www.gnu.org/licenses/agpl-3.0.html
@@ -25,7 +25,7 @@ class PyGithubInterfaces(unittest.TestCase):
 
     def test_instantiate_an_object_from_utils_PatchedGithub_class(self):
         inst = utils.PatchedGithub(auth=github.Auth.Token("testing-token"))
-        self.assertIsNotNone(inst._Github__requester)  # pylint: disable=no-member
+        self.assertIsNotNone(inst.requester)
 
         inst = github.Github(auth=github.Auth.Token("testing-token"))
-        self.assertIsNotNone(inst._Github__requester)
+        self.assertIsNotNone(inst.requester)
