@@ -36,7 +36,7 @@ class PatchedGithub(github.Github):
         https://github.com/PyGithub/PyGithub/issues/1776
         """
         return github.Installation.Installation(
-            self.requester, headers={}, attributes={"id": inst_id}, completed=True
+            self.requester, headers={}, attributes={"id": inst_id}
         )
 
 
