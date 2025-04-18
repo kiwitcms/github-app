@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2024 Alexander Todorov <atodorov@otb.bg>
+# Copyright (c) 2019-2025 Alexander Todorov <atodorov@otb.bg>
 #
 # Licensed under GNU Affero General Public License v3 or later (AGPLv3+)
 # https://www.gnu.org/licenses/agpl-3.0.html
@@ -35,11 +35,8 @@ class PatchedGithub(github.Github):
         Doesn't look like it will be introduced again:
         https://github.com/PyGithub/PyGithub/issues/1776
         """
-        # b/c this is self.__requester in the parent class
-        requester = self._Github__requester  # pylint: disable=protected-access,no-member
-
         return github.Installation.Installation(
-            requester, headers={}, attributes={"id": inst_id}, completed=True
+            self.requester, headers={}, attributes={"id": inst_id}, completed=True
         )
 
 
