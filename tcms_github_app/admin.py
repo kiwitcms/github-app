@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2024 Alexander Todorov <atodorov@otb.bg>
+# Copyright (c) 2019-2025 Alexander Todorov <atodorov@otb.bg>
 #
 # Licensed under GNU Affero General Public License v3 or later (AGPLv3+)
 # https://www.gnu.org/licenses/agpl-3.0.html
@@ -20,6 +20,7 @@ from tcms_github_app.models import WebhookPayload
 
 
 class WebhookPayloadAdmin(admin.ModelAdmin):
+    search_fields = ('action', 'event', 'sender')
     list_display = ('pk', 'received_on', 'sender', 'event', 'action')
     ordering = ['-pk']
 
