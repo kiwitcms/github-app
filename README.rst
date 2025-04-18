@@ -107,6 +107,15 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v2.1.0 (18 Apr 2025)
+~~~~~~~~~~~~~~~~~~~~
+
+- Refactor internal calls to PyGithub b/c of updated interface. Fixes
+  `Sentry KIWI-TCMS-V7 <https://kiwitcms.sentry.io/issues/6548382981/>`_
+- Enable search for WebhookPayloadAdmin
+- Start testing using upstream Postgres
+
+
 v2.0.1 (18 Jun 2024)
 ~~~~~~~~~~~~~~~~~~~~
 
