@@ -42,8 +42,6 @@ jobs:
           pip install -r devel.txt
           pip install $(curl --silent https://raw.githubusercontent.com/kiwitcms/Kiwi/master/requirements/base.txt | grep PyGithub)
 
-          docker exec -i postgresql_database psql -c "ALTER USER kiwi CREATEDB;"
-
       - name: Execute tests
         env:
           KIWI_GITHUB_APP_ID: ${{ secrets.KIWI_GITHUB_APP_ID }}
