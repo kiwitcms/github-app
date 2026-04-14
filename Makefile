@@ -61,3 +61,17 @@ check: flake8 pylint test_for_missing_migrations test
 messages:
 	./manage.py makemessages --locale en --no-obsolete --no-vinaigrette --ignore "test*.py"
 	ls tcms_github_app/locale/*/LC_MESSAGES/*.po | xargs -n 1 -I @ msgattrib -o @ --no-fuzzy @
+
+
+.PHONY: package
+package:
+	rm -rf build/ dist/ kiwitcms_*.egg-info/
+	python setup.py sdist
+	python setup.py bdist_wheel
+	twine check dist/*
+
+.PHONY: upload
+upload: package
+	test -n "$(TWINE_USERNAME)" || exit 1
+	test -n "$(TWINE_PASSWORD)" || exit 2
+	twine upload dist/* --repository-url https://push.fury.io/kiwitcms
