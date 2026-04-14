@@ -42,16 +42,22 @@ jobs:
           echo "password = ${{ secrets.TCMS_PASSWORD }}" >> ~/.tcms.conf
 
       - name: Install dependencies
+        env:
+          PKG_TOKEN: ${{ secrets.GEMFURY_PULL_TOKEN }}
         run: |
           sudo apt-get install libkrb5-dev
 
-          pip install -r devel.txt
+          pip install -r devel.txt \
+            --index-url https://$PKG_TOKEN@pkg.kiwitcms.eu/pypi/ \
+            --extra-index-url https://pypi.org/simple/
+
           pip install $(curl --silent https://raw.githubusercontent.com/kiwitcms/Kiwi/master/requirements/base.txt | grep PyGithub)
 
       - name: Execute tests
         env:
           KIWI_GITHUB_APP_ID: ${{ secrets.KIWI_GITHUB_APP_ID }}
           KIWI_GITHUB_APP_PRIVATE_KEY: ${{ secrets.KIWI_GITHUB_APP_PRIVATE_KEY }}
+          PKG_TOKEN: ${{ secrets.GEMFURY_PULL_TOKEN }}
         run: |
           # report to Kiwi TCMS only if we have access to secrets
           if [ -n "${{ secrets.TCMS_PASSWORD }}" ]; then
