@@ -1,4 +1,4 @@
-# Copyright (c) 2019 Alexander Todorov <atodorov@otb.bg>
+# Copyright (c) 2019-2026 Alexander Todorov <atodorov@otb.bg>
 #
 # Licensed under GNU Affero General Public License v3 or later (AGPLv3+)
 # https://www.gnu.org/licenses/agpl-3.0.html
@@ -19,13 +19,13 @@ class DiscoveredAsPluginTestCase(LoggedInTestCase):
             Then navigation menu under PLUGINS will be extended
         """
         for name, target in settings.MENU_ITEMS:
-            if name == 'PLUGINS':
+            if name == 'MORE':
                 for menu_item in menu.MENU_ITEMS:
                     self.assertIn(menu_item, target)
 
                 return
 
-        self.fail('PLUGINS not found in settings.MENU_ITEMS')
+        self.fail('MORE not found in settings.MENU_ITEMS')
 
     def test_menu_rendering(self):
         """
