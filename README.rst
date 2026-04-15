@@ -107,6 +107,14 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v2.2.0 (16 Apr 2026)
+~~~~~~~~~~~~~~~~~~~~
+
+- Update pre-commit-hooks from v5.0.0 to v6.0.0
+- Update GitHub actions
+- Update minimum versions of multiple requirements to reduce vulnerabilities
+
+
 v2.1.0 (18 Apr 2025)
 ~~~~~~~~~~~~~~~~~~~~
 
