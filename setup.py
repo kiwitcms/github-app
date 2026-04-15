@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2024 Alexander Todorov <atodorov@otb.bg>
+# Copyright (c) 2019-2026 Alexander Todorov <atodorov@otb.bg>
 #
 # Licensed under GNU Affero General Public License v3 or later (AGPLv3+)
 # https://www.gnu.org/licenses/agpl-3.0.html
@@ -26,7 +26,7 @@ def get_install_requires(path):
 
 setup(
     name='kiwitcms-github-app',
-    version='2.1.0',
+    version='2.2.0',
     description='GitHub App integration for Kiwi TCMS',
     long_description=get_long_description(),
     author='Kiwi TCMS',
