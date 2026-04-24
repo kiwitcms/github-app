@@ -1,5 +1,5 @@
 social-auth-app-django
-social-auth-core>=3.3.0
+social-auth-core>=4.8.7
 kiwitcms-tenants
 certifi>=2023.7.22 # not directly required, pinned by Snyk to avoid a vulnerability
 cryptography>=46.0.5 # not directly required, pinned by Snyk to avoid a vulnerability
