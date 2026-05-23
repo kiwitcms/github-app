@@ -107,6 +107,13 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v2.2.1 (23 May 2026)
+~~~~~~~~~~~~~~~~~~~~
+
+- Make this code compatible with setuptools>=82
+- Pin multiple transitive dependencies
+
+
 v2.2.0 (16 Apr 2026)
 ~~~~~~~~~~~~~~~~~~~~
 
