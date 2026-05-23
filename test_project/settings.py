@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2023 Alexander Todorov <atodorov@otb.bg>
+# Copyright (c) 2019-2026 Alexander Todorov <atodorov@otb.bg>
 #
 # Licensed under GNU Affero General Public License v3 or later (AGPLv3+)
 # https://www.gnu.org/licenses/agpl-3.0.html
@@ -8,6 +8,35 @@
 
 import os
 import sys
+from importlib.metadata import Distribution, DistributionFinder
+
+
+# pretend this is a plugin during testing & development
+# IT NEEDS TO BE BEFORE the wildcard import below !!!
+# .egg-info/ directory will mess up with this
+class FakePluginFinder(DistributionFinder):
+    class FakeDistribution(Distribution):  # pylint: disable=nested-class-found
+        def read_text(self, filename):
+            if filename == "METADATA":
+                return """Name: kiwitcms_github_app
+Version: 0.1
+"""
+            if filename == "entry_points.txt":
+                return """
+[kiwitcms.plugins]
+kiwitcms_github_app=tcms_github_app
+"""
+
+            return ""
+
+        def locate_file(self, path):
+            raise RuntimeError("This distribution has no file system")
+
+    def find_distributions(self, context=DistributionFinder.Context()):
+        yield self.FakeDistribution()
+
+
+sys.meta_path.append(FakePluginFinder())
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -15,26 +44,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # so we can load multi_tenant.py first!
 home_dir = os.path.expanduser("~")
 removed_paths = []
-for path in sys.path:
-    if path.startswith(home_dir) and path.find('site-packages') == -1:
-        removed_paths.append(path)
+for a_path in sys.path:
+    if a_path.startswith(home_dir) and a_path.find('site-packages') == -1:
+        removed_paths.append(a_path)
 
-for path in removed_paths:
-    sys.path.remove(path)
+for a_path in removed_paths:
+    sys.path.remove(a_path)
 
 # re add them again
 sys.path.extend(removed_paths)
-
-import pkg_resources
-
-# pretend this is a plugin during testing & development
-# IT NEEDS TO BE BEFORE the wildcard import below !!!
-# .egg-info/ directory will mess up with this
-dist = pkg_resources.Distribution(__file__)
-entry_point = pkg_resources.EntryPoint.parse('kiwitcms_github_app = tcms_github_app',
-                                             dist=dist)
-dist._ep_map = {'kiwitcms.plugins': {'kiwitcms_github_app': entry_point}}
-pkg_resources.working_set.add(dist)
 
 from tcms.settings.product import *  # noqa: F403
 
