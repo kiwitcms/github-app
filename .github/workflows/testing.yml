@@ -28,7 +28,7 @@ jobs:
 
       - name: Build me
         run: |
-          pip install -U pip "setuptools<82" wheel twine
+          pip install -U pip setuptools wheel twine
 
           make package
 
