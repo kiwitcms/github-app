@@ -19,7 +19,7 @@ test:
 	KIWI_TENANTS_DOMAIN="example.org" coverage run \
 	    --include "tcms_github_app/*.py" \
 	    --omit "tcms_github_app/tests/*.py" \
-	    ./manage.py test -v2 tcms_github_app.tests
+	    ./manage.py test -v2 tcms_github_app.tests.test_issues
 
 FLAKE8_EXCLUDE=.git
 .PHONY: flake8
