@@ -107,6 +107,12 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v2.2.2 (04 Jun 2026)
+~~~~~~~~~~~~~~~~~~~~
+
+- Build and test with Python 3.12
+
+
 v2.2.1 (23 May 2026)
 ~~~~~~~~~~~~~~~~~~~~
 
