@@ -10,3 +10,6 @@ if 'tcms_github_app.middleware.CheckGitHubAppMiddleware' not in MIDDLEWARE:   # 
 
 if 'tcms_github_app.issues.Integration' not in EXTERNAL_BUG_TRACKERS:   # noqa: F821
     EXTERNAL_BUG_TRACKERS.append('tcms_github_app.issues.Integration')  # noqa: F821
+
+if 'django.contrib.postgres' not in INSTALLED_APPS:  # noqa: F821
+    INSTALLED_APPS.append('django.contrib.postgres')  # noqa: F821
