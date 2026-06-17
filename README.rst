@@ -107,6 +107,14 @@ Then configure how the application interacts with GitHub:
 Changelog
 ---------
 
+v2.3.0 (17 Jun 2026)
+~~~~~~~~~~~~~~~~~~~~
+
+- Build and test with Django 6
+- Require Python 3.12 or newer
+- Add django.contrib.postgres to INSTALLED_APPS
+
+
 v2.2.2 (04 Jun 2026)
 ~~~~~~~~~~~~~~~~~~~~
 
