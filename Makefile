@@ -32,7 +32,7 @@ pylint:
 	if [ ! -d "$(KIWI_INCLUDE_PATH)/kiwi_lint" ]; then \
 	    git clone --depth 1 https://github.com/kiwitcms/Kiwi.git $(KIWI_INCLUDE_PATH); \
 	    pip install -U -r $(KIWI_INCLUDE_PATH)/requirements/base.txt; \
-	    pip install -U -r requirements.txt; --index-url https://$(PKG_TOKEN)@pkg.kiwitcms.eu/pypi/ --extra-index-url https://pypi.org/simple/; \
+	    pip install -U -r requirements.txt --index-url https://$(PKG_TOKEN)@pkg.kiwitcms.eu/pypi/ --extra-index-url https://pypi.org/simple/; \
 	    rm -rf $(PATH_TO_SITE_PACKAGES)/test_project; \
 	fi
 
@@ -46,7 +46,7 @@ test_for_missing_migrations:
 	if [ ! -d "$(KIWI_INCLUDE_PATH)/kiwi_lint" ]; then \
 	    git clone --depth 1 https://github.com/kiwitcms/Kiwi.git $(KIWI_INCLUDE_PATH); \
 	    pip install -U -r $(KIWI_INCLUDE_PATH)/requirements/base.txt; \
-	    pip install -U -r requirements.txt; --index-url https://$(PKG_TOKEN)@pkg.kiwitcms.eu/pypi/ --extra-index-url https://pypi.org/simple/; \
+	    pip install -U -r requirements.txt --index-url https://$(PKG_TOKEN)@pkg.kiwitcms.eu/pypi/ --extra-index-url https://pypi.org/simple/; \
 	    rm -rf $(PATH_TO_SITE_PACKAGES)/test_project; \
 	fi
 
