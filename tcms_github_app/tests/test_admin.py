@@ -63,8 +63,7 @@ class AppInstallationAdminTestCase(LoggedInTestCase):
         self.assertContains(response, 'Change app installation')
         self.assertContains(response, 'For additional configuration see')
 
-        self.assertContains(response,
-                            '>---------</option>')
+        self.assertContains(response, '<option value="" selected>')
         self.assertContains(response,
                             '>[public] </option>')
         self.assertContains(response,
