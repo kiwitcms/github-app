@@ -175,8 +175,8 @@ v1.6.0 (15 Jan 2024)
 
 - 1-click bug report will now use ``execution.build.version.product`` instead
   of ``execution.run.plan.product`` following changes in Kiwi TCMS, see:
-  <https://github.com/kiwitcms/Kiwi/commit/48a33a71e664c8c3ed2ceb298b5f1e19d0bddb52>_
-  and `PR #3439 <https://github.com/kiwitcms/Kiwi/pull/3439>`_ for more details
+  <https://github.com/kiwitcms/kiwitcms/commit/48a33a71e664c8c3ed2ceb298b5f1e19d0bddb52>_
+  and `PR #3439 <https://github.com/kiwitcms/kiwitcms/pull/3439>`_ for more details
 - Require minimum version of several transitive dependencies,
   ``certifi>=2023.7.22``, ``cryptography>=41.0.4``, ``pyjwt>=2.4.0``, ``requests>=2.31.0``
   in order to minimize exposure to known security vulnerabilities
