@@ -70,7 +70,7 @@ jobs:
             --index-url https://$PKG_TOKEN@pkg.kiwitcms.eu/pypi/ \
             --extra-index-url https://pypi.org/simple/
 
-          pip install $(curl --silent https://raw.githubusercontent.com/kiwitcms/Kiwi/master/requirements/base.txt | grep PyGithub)
+          pip install $(curl --silent https://raw.githubusercontent.com/kiwitcms/kiwitcms/master/requirements/base.txt | grep PyGithub)
 
       - name: Execute tests
         env:
